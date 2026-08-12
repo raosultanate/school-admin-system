@@ -21,7 +21,8 @@ finish, big enough to hit every mainstream Spring Boot concept.
 - [x] Install VS Code Java + Spring Boot extensions
 - [x] Generate project skeleton via Spring Initializr (Spring Boot 4.1, Maven, Java 21)
 - [x] Confirm `./mvnw compile` works
-- [x] git init this project
+- [x] git init this project, publish to GitHub
+- **Notes:** [notes/module-00-environment-setup.md](notes/module-00-environment-setup.md)
 
 ## Module 1 — Java OOP Refresher: Inheritance & Polymorphism ✅
 *No Spring yet — plain Java, so the OOP concepts aren't tangled up with framework magic.*

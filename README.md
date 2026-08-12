@@ -26,6 +26,10 @@ learn Spring Boot (and refresh core Java) for an interview.
 ./mvnw spring-boot:run
 ```
 
+New machine and don't have Java/Maven set up yet? See
+[`docs/notes/module-00-environment-setup.md`](docs/notes/module-00-environment-setup.md)
+for exactly how this environment (and the project itself) was set up.
+
 ## Status
 
 Early — see [`docs/ROADMAP.md`](docs/ROADMAP.md) for current module progress.
