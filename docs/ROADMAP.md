@@ -5,8 +5,9 @@ refreshing core Java (inheritance, polymorphism, exception handling) along the w
 
 **How this works:** each module below pairs a Java concept refresher with a Spring Boot
 concept, both applied directly to a feature of the School Admin System. We check items off
-as we go. Diagrams that explain *why* things are structured a certain way live in `docs/`
-and get updated as our understanding grows — don't expect `docs/` to be "finished" early.
+as we go. Architecture diagrams ([architecture.md](architecture.md)) and per-module
+write-ups ([notes/](notes/)) live alongside this file and get updated as our understanding
+grows — don't expect them to be "finished" early.
 
 **Domain we're building:** an admin can manage `Teacher`s and `Student`s (both are kinds of
 `Person`), organize them into `Course`s, and `Enroll` students into courses. Small enough to
@@ -35,7 +36,7 @@ finish, big enough to hit every mainstream Spring Boot concept.
 - **Build:** plain Java domain classes (`Person`, `Student`, `Teacher`) with a `main()` to
   exercise them, no database yet. ✅ `domain/{Person,Student,Teacher}.java`,
   `playground/OopDemo.java`.
-- **Notes:** [docs/notes/module-01-inheritance-polymorphism.md](docs/notes/module-01-inheritance-polymorphism.md)
+- **Notes:** [notes/module-01-inheritance-polymorphism.md](notes/module-01-inheritance-polymorphism.md)
 - **Interview payoff:** "explain the four pillars of OOP with an example" answered from
   your own code.
 

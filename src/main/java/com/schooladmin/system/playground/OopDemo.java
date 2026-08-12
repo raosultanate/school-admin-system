@@ -6,6 +6,14 @@ import com.schooladmin.system.domain.Teacher;
 
 import java.util.List;
 
+/**
+ * Standalone demo (no Spring, no database) of inheritance and polymorphism over the
+ * {@link Person} hierarchy. Run directly:
+ *
+ * <pre>{@code
+ * java -cp target/classes com.schooladmin.system.playground.OopDemo
+ * }</pre>
+ */
 public class OopDemo {
 
     public static void main(String[] args) {
