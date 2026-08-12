@@ -30,6 +30,17 @@ New machine and don't have Java/Maven set up yet? See
 [`docs/notes/module-00-environment-setup.md`](docs/notes/module-00-environment-setup.md)
 for exactly how this environment (and the project itself) was set up.
 
+### Playground demos
+
+Early modules are plain Java, run standalone (no Spring context, no web server) rather
+than through the app above:
+
+```bash
+./mvnw -q compile
+java -cp target/classes com.schooladmin.system.playground.OopDemo             # Module 1
+java -cp target/classes com.schooladmin.system.playground.ExceptionBasicsDemo # Module 2
+```
+
 ## Status
 
 Early — see [`docs/ROADMAP.md`](docs/ROADMAP.md) for current module progress.
