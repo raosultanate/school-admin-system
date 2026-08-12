@@ -11,6 +11,39 @@ consistent as modules get added.
 - `docs/architecture.md` — architecture/domain diagrams, redrawn as understanding grows.
 - `docs/notes/` — one write-up per module, explaining concepts against the actual code.
 
+## Package organization: by layer, not by feature
+
+Two common ways to organize a Spring Boot app's packages:
+
+- **By layer** (chosen here): `domain/`, `repository/`, `service/`, `controller/` —
+  everything of one *kind* lives together.
+- **By feature**: `student/`, `teacher/`, `course/`, each containing its own
+  controller+service+repository+entity — everything about one *concept* lives together.
+
+By-feature is a legitimate, often-preferred pattern on large, multi-team codebases, where
+by-layer starts hurting cohesion once there are dozens of entities and the "everything of
+one kind" packages become unwieldy grab-bags. That threshold doesn't apply here — this
+project will only ever have a handful of entities (`Student`, `Teacher`, `Course`,
+`Enrollment`) — so by-feature would be structure for a scale this app doesn't have.
+By-layer is also what the overwhelming majority of Spring tutorials, official guides, and
+typical interview-context codebases use, making it the most immediately recognizable
+pattern to reach for here.
+
+**Not organized by Java language construct** (no `enums/`, `interfaces/`, `classes/`
+folders): `AccessLevel`, `Department`, and `HasLabel` live in `domain/` alongside `Person`,
+`Student`, `Teacher` — they're domain concepts exactly as much as any class is; that Java
+happens to implement them with the `enum`/`interface` keyword is an implementation detail,
+not an organizing principle. Splitting by construct would scatter related domain concepts
+across folders for no real benefit.
+
+Current/planned layout as later modules add to it:
+- `domain/` — entities, enums, interfaces, exceptions (`domain/exception/`) — in place
+  since Module 1
+- `repository/` — Spring Data repositories — Module 6
+- `service/` — business logic — Module 9
+- `controller/` — REST controllers — Module 7
+- `playground/` — standalone learning demos, explicitly outside this scheme (see below)
+
 ## Comment philosophy
 
 Two different things get lumped together as "comments" — worth keeping them separate:
