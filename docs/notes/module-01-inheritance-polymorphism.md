@@ -1,4 +1,4 @@
-# Module 1 — Inheritance & Polymorphism
+# Module 1 — Inheritance & Polymorphism (and Encapsulation & Abstraction, for free)
 
 Code for this module: `src/main/java/com/schooladmin/system/domain/{Person,Student,Teacher}.java`
 and `src/main/java/com/schooladmin/system/playground/OopDemo.java`. Deliberately plain
@@ -94,6 +94,34 @@ Why this matters beyond the demo: this is the exact mechanism Spring leans on co
 e.g. you'll depend on an interface type, and Spring hands you a concrete implementation at
 runtime. Understanding *this* small example is what makes that later behavior feel obvious
 instead of magical.
+
+## The other two pillars were already here
+
+"The four pillars of OOP" — encapsulation, abstraction, inheritance, polymorphism — is a
+near-guaranteed interview question. This one file of code happens to demonstrate all four,
+so it's worth naming the two we used without calling out:
+
+**Encapsulation** — hiding an object's internal state and only exposing it through
+controlled methods. Look at `Person` again: every field is `private final`. There are no
+setters anywhere. The only way to read a field from outside the class is through a getter
+(`getFirstName()`, `getFullName()`, etc.) — nothing outside the class can reach in and
+mutate `firstName` directly, and nothing can mutate it at all after construction, because
+`final` fields can only be assigned once (in the constructor). The object fully owns and
+protects its own state.
+
+**Abstraction** — exposing *what* something can do without exposing *how*. `Person`
+declares `abstract String describe()`: every `Person` is guaranteed to be describable, but
+`Person` itself says nothing about *how* that description is built — that's each
+subclass's private business. `OopDemo` only ever depends on the `Person` abstraction (`for
+(Person person : people)`); it never needs to know it's holding a `Student` or a `Teacher`.
+That's abstraction paying off directly as loose coupling.
+
+| Pillar | Where it is here |
+|---|---|
+| Encapsulation | `private final` fields + getters, no setters, in `Person` |
+| Abstraction | `abstract class Person` + `abstract describe()` — depend on the interface, not the detail |
+| Inheritance | `Student extends Person`, `Teacher extends Person`, `super(...)` |
+| Polymorphism | `OopDemo`'s loop: one call site, different behavior per actual object type |
 
 ## Try it yourself
 

@@ -22,16 +22,22 @@ finish, big enough to hit every mainstream Spring Boot concept.
 - [x] Confirm `./mvnw compile` works
 - [x] git init this project
 
-## Module 1 — Java OOP Refresher: Inheritance & Polymorphism
+## Module 1 — Java OOP Refresher: Inheritance & Polymorphism ✅
 *No Spring yet — plain Java, so the OOP concepts aren't tangled up with framework magic.*
-- [ ] Classes vs objects, constructors, `this`
-- [ ] Inheritance: `Person` (abstract) → `Student`, `Teacher`
-- [ ] Method overriding vs overloading, `@Override`, `super`
-- [ ] Polymorphism: treating `Student`/`Teacher` as `Person`, dynamic dispatch
-- [ ] Abstract classes vs interfaces — when to use which
+- [x] Classes vs objects, constructors, `this`
+- [x] Inheritance: `Person` (abstract) → `Student`, `Teacher`
+- [x] Method overriding vs overloading, `@Override`, `super`
+- [x] Polymorphism: treating `Student`/`Teacher` as `Person`, dynamic dispatch
+- [x] Abstract classes (as encountered here) — interfaces vs abstract classes still to
+      revisit when we hit Module 7 (Strategy pattern)
+- [x] Encapsulation (private final fields + getters) and abstraction (`abstract describe()`)
+      — noticed as a bonus since the same code already demonstrates all four OOP pillars
 - **Build:** plain Java domain classes (`Person`, `Student`, `Teacher`) with a `main()` to
-  exercise them, no database yet.
-- **Interview payoff:** "explain polymorphism with an example" answered from your own code.
+  exercise them, no database yet. ✅ `domain/{Person,Student,Teacher}.java`,
+  `playground/OopDemo.java`.
+- **Notes:** [docs/notes/module-01-inheritance-polymorphism.md](docs/notes/module-01-inheritance-polymorphism.md)
+- **Interview payoff:** "explain the four pillars of OOP with an example" answered from
+  your own code.
 
 ## Module 2 — Java Refresher: Exception Handling
 - [ ] Checked vs unchecked exceptions, the exception hierarchy
