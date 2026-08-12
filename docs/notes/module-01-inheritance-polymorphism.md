@@ -123,14 +123,20 @@ That's abstraction paying off directly as loose coupling.
 | Inheritance | `Student extends Person`, `Teacher extends Person`, `super(...)` |
 | Polymorphism | `OopDemo`'s loop: one call site, different behavior per actual object type |
 
-## Try it yourself
+## Try it yourself ✅
 
-Add a third `Person` subtype (e.g. `Admin`) with its own `describe()`, add one to the
-`people` list in `OopDemo`, and re-run:
+Done: added `domain/Admin.java` (a third `Person` subtype, `accessLevel` field, its own
+`describe()`), and one line in `OopDemo` to add it to the `people` list. Output:
 
 ```
-java -cp target/classes com.schooladmin.system.playground.OopDemo
+Ada Lovelace is a student (#S-1001)
+Alan Turing teaches in Computer Science
+Grace Hopper administers the system (SUPER_ADMIN)
 ```
 
-No changes needed anywhere else — the `for` loop already works for any `Person` subtype,
-because it only ever asks for behavior `Person` guarantees exists (`describe()`).
+The `for` loop in `OopDemo` — `for (Person person : people) { System.out.println(person.describe()); }`
+— was **not touched**. It didn't need to be: it only ever asks for behavior `Person`
+guarantees exists (`describe()`), so any new subtype slots in automatically. This is the
+practical payoff of coding against an abstraction instead of concrete types — it's also
+why, later on, adding a new Spring `@Service` implementation of an interface won't require
+touching the code that depends on the interface.

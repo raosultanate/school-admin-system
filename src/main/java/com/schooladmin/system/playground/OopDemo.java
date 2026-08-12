@@ -1,5 +1,6 @@
 package com.schooladmin.system.playground;
 
+import com.schooladmin.system.domain.Admin;
 import com.schooladmin.system.domain.Person;
 import com.schooladmin.system.domain.Student;
 import com.schooladmin.system.domain.Teacher;
@@ -19,7 +20,8 @@ public class OopDemo {
     public static void main(String[] args) {
         List<Person> people = List.of(
                 new Student("Ada", "Lovelace", "ada@school.edu", "S-1001"),
-                new Teacher("Alan", "Turing", "alan@school.edu", "Computer Science")
+                new Teacher("Alan", "Turing", "alan@school.edu", "Computer Science"),
+                new Admin("Grace", "Hopper", "grace@school.edu", "SUPER_ADMIN")
         );
 
         for (Person person : people) {
