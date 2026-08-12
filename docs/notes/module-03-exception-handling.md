@@ -1,4 +1,4 @@
-# Module 2 — Exception Handling
+# Module 3 — Exception Handling
 
 Code for this module (part 1): `src/main/java/com/schooladmin/system/playground/ExceptionBasicsDemo.java`.
 Plain Java, no Spring — the custom exceptions we wire into the project's domain come in

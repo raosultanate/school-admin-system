@@ -24,7 +24,7 @@ flowchart TD
 
 **Why layers?** Each layer has one job: Controllers translate HTTP ⇄ Java, Services hold
 business rules, Repositories talk to the database. This keeps business logic testable
-without spinning up a web server or a database (see Module 9).
+without spinning up a web server or a database (see Module 11).
 
 ## Domain model (target shape, grows through Modules 1–8)
 
@@ -60,7 +60,7 @@ classDiagram
     Teacher "1" --> "many" Course : teaches
 ```
 
-_Enrollment is the join entity between Student and Course (introduced in Module 8)._
+_Enrollment is the join entity between Student and Course (introduced in Module 10)._
 
 ## Status log
 
