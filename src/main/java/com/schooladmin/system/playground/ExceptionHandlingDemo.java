@@ -53,6 +53,10 @@ public class ExceptionHandlingDemo {
         try {
             return Integer.parseInt(raw);
         } catch (NumberFormatException e) {
+            // Exception chaining: translate the low-level, technical NumberFormatException
+            // into a domain-meaningful one for the caller, passing the original as the
+            // cause (the "e" argument below) so it's still visible via getCause() -- not
+            // caught here just to be silently discarded.
             throw new InvalidStudentDataException("Invalid enrollment year: '" + raw + "'", e);
         }
     }
