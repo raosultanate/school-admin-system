@@ -31,7 +31,7 @@ finish, big enough to hit every mainstream Spring Boot concept.
 - [x] Method overriding vs overloading, `@Override`, `super`
 - [x] Polymorphism: treating `Student`/`Teacher` as `Person`, dynamic dispatch
 - [x] Abstract classes (as encountered here) — interfaces vs abstract classes still to
-      revisit when we hit Module 7 (Strategy pattern)
+      revisit when we hit Module 8 (Strategy pattern)
 - [x] Encapsulation (private final fields + getters) and abstraction (`abstract describe()`)
       — noticed as a bonus since the same code already demonstrates all four OOP pillars
 - **Build:** plain Java domain classes (`Person`, `Student`, `Teacher`) with a `main()` to
@@ -50,7 +50,32 @@ finish, big enough to hit every mainstream Spring Boot concept.
 - **Notes:** [notes/module-02-exception-handling.md](notes/module-02-exception-handling.md)
 - **Interview payoff:** "checked vs unchecked, when would you use a custom exception?"
 
-## Module 3 — Spring Boot Fundamentals: IoC & Dependency Injection
+## Module 3 — Java Refresher: Collections & Generics
+*Still plain Java. This is what makes Spring Data's `JpaRepository<T, ID>` (Module 5) and
+every `List<...>`/`Map<...>` we've been about to write actually make sense, instead of
+being copy-pasted syntax.*
+- [ ] The Collections Framework map: `List`, `Set`, `Map` — what each guarantees
+      (order? uniqueness? key lookup?) and which our domain will actually need
+- [ ] `ArrayList` vs `LinkedList` — underlying structure (resizable array vs doubly-linked
+      nodes), what that means for `get(i)` vs `add`/`remove` at the ends, and why `ArrayList`
+      is the default choice almost every time in modern Java
+- [ ] `HashMap` vs `LinkedHashMap` vs `TreeMap` — Java's "dictionary": key → value lookup,
+      what "average O(1) lookup" actually depends on (`hashCode()`), and when ordering
+      (insertion order / sorted order) matters enough to pay for it
+- [ ] The `equals()`/`hashCode()` contract — why `HashMap`/`HashSet` silently misbehave if
+      you override one but not the other, and why our `Person` hierarchy doesn't need this
+      yet (no `Person` has gone into a `HashSet` or been a `HashMap` key so far)
+- [ ] Generics: why (`List<Student>` vs a raw `List` full of casts), a bounded type
+      parameter (`<T extends Comparable<T>>`), and reading a generic interface signature
+      like `JpaRepository<T, ID>` before we actually meet it
+- **Build:** a small in-memory `StudentRoster` — a `List<Student>` for ordered iteration, a
+  `Map<String, List<Student>>` grouping students by something (e.g. year), and a tiny
+  hand-rolled generic `InMemoryRepository<T, ID>` (foreshadowing Module 5's real one).
+- **Interview payoff:** "ArrayList vs LinkedList", "how does HashMap work", "what are
+  generics for", "what's the equals/hashCode contract" — four very common questions, one
+  small project.
+
+## Module 4 — Spring Boot Fundamentals: IoC & Dependency Injection
 - [ ] What `@SpringBootApplication` actually does (auto-config, component scan)
 - [ ] The IoC container / `ApplicationContext`
 - [ ] `@Component`, `@Service`, `@Repository`, `@Autowired`, constructor injection
@@ -59,7 +84,7 @@ finish, big enough to hit every mainstream Spring Boot concept.
   `PersonService` via constructor injection, run it in the app context.
 - **Diagram:** `docs/architecture.md` gets its first layered-architecture sketch.
 
-## Module 4 — Persistence: JPA, Hibernate, Spring Data
+## Module 5 — Persistence: JPA, Hibernate, Spring Data
 - [ ] `@Entity`, `@Id`, `@GeneratedValue`, column mapping
 - [ ] Spring Data JPA repositories (`JpaRepository`), derived query methods
 - [ ] H2 in-memory DB + H2 console for poking at data
@@ -67,56 +92,56 @@ finish, big enough to hit every mainstream Spring Boot concept.
   `TeacherRepository`, `CourseRepository`.
 - **Diagram:** first ER diagram in `docs/architecture.md`.
 
-## Module 5 — REST APIs
+## Module 6 — REST APIs
 - [ ] `@RestController`, `@RequestMapping`/`@GetMapping`/etc.
 - [ ] DTOs vs entities — why you don't return entities directly
 - [ ] `ResponseEntity`, status codes
 - **Build:** CRUD REST endpoints for Students and Teachers, tested with `curl`/Postman.
 
-## Module 6 — Validation & Exception Handling in Spring
+## Module 7 — Validation & Exception Handling in Spring
 *Ties directly back to Module 2.*
 - [ ] Bean Validation (`@Valid`, `@NotNull`, `@Size`, etc.)
 - [ ] `@ControllerAdvice` + `@ExceptionHandler` — mapping custom exceptions to HTTP status
 - [ ] Consistent error response shape
 - **Build:** wire Module 2's custom exceptions into a global exception handler.
 
-## Module 7 — Service Layer, Transactions & Interfaces
+## Module 8 — Service Layer, Transactions & Interfaces
 - [ ] `@Transactional` and why it matters
 - [ ] Interfaces + Strategy pattern (e.g. a `GradingStrategy`) — more polymorphism, this
   time framework-flavored
 - **Build:** `EnrollmentService` with real business rules (course capacity, duplicate
   enrollment checks) using Module 2's exceptions.
 
-## Module 8 — Relationships & Advanced JPA
+## Module 9 — Relationships & Advanced JPA
 - [ ] `@OneToMany`, `@ManyToMany` (Student ⇄ Course via Enrollment)
 - [ ] Lazy vs eager loading, cascading, N+1 query problem
 - **Build:** wire up Enrollment as the join entity between Student and Course.
 - **Diagram:** ER diagram in `docs/architecture.md` gets updated with relationships.
 
-## Module 9 — Testing
+## Module 10 — Testing
 - [ ] JUnit 5 basics
 - [ ] Mockito for mocking dependencies
 - [ ] `@SpringBootTest`, `@WebMvcTest`, `@DataJpaTest` — what each actually boots
 - **Build:** unit tests for services, slice tests for controllers and repositories.
 
-## Module 10 — Spring Security
+## Module 11 — Spring Security
 - [ ] Authentication vs authorization
 - [ ] Roles (`ADMIN`, `TEACHER`) securing endpoints
 - [ ] Password hashing, basics of JWT (if time allows)
 - **Build:** lock down admin-only endpoints (e.g. only admins can delete a student).
 
-## Module 11 — Polish: Pagination, Logging, Config Profiles
+## Module 12 — Polish: Pagination, Logging, Config Profiles
 - [ ] Pagination & sorting (`Pageable`)
 - [ ] SLF4J logging
 - [ ] `application-dev.properties` vs `application-prod.properties`, switching H2 → Postgres
 - **Diagram:** `docs/architecture.md` gets a "deployment view" (dev vs prod config).
 
-## Module 12 — API Docs & Packaging
+## Module 13 — API Docs & Packaging
 - [ ] springdoc-openapi (Swagger UI)
 - [ ] Building an executable jar, basic Dockerfile
 - **Stretch:** `docker-compose.yml` with Postgres.
 
-## Module 13 — Interview Wrap-Up
+## Module 14 — Interview Wrap-Up
 - [ ] Walk back through each module and answer "why did we do it this way" out loud
 - [ ] Map each module to likely interview questions
 - [ ] Mock Q&A session
