@@ -24,6 +24,9 @@ public class OopDemo {
                 new Admin("Grace", "Hopper", "grace@school.edu", "SUPER_ADMIN")
         );
 
+        // Polymorphism: the loop only knows it's holding Person references, but each
+        // describe() call dispatches to the actual runtime type (Student/Teacher/Admin) --
+        // nothing here changes if a new Person subtype is added later.
         for (Person person : people) {
             System.out.println(person.describe());
         }
