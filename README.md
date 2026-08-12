@@ -37,8 +37,9 @@ than through the app above:
 
 ```bash
 ./mvnw -q compile
-java -cp target/classes com.schooladmin.system.playground.OopDemo             # Module 1
-java -cp target/classes com.schooladmin.system.playground.ExceptionBasicsDemo # Module 3
+java -cp target/classes com.schooladmin.system.playground.OopDemo               # Module 1
+java -cp target/classes com.schooladmin.system.playground.ExceptionBasicsDemo   # Module 3
+java -cp target/classes com.schooladmin.system.playground.ExceptionHandlingDemo # Module 3
 ```
 
 ## Status

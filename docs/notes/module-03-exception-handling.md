@@ -112,9 +112,94 @@ just to make the auto-close moment visible in the output. This replaced the olde
 of closing resources by hand in a `finally` block, which was easy to get subtly wrong
 (forgetting to close on one exception path, or closing nested resources in the wrong order).
 
-## Next: custom exceptions (part 2)
+## Part 2 — custom exceptions
 
-Still to build: `StudentNotFoundException`, `DuplicateEnrollmentException` — custom
-exceptions wired into actual project domain logic (a small `StudentRegistry`), plus
-exception chaining and a decision on checked vs. unchecked for our own exception types.
-This file will get a second half once that's done.
+Code: `domain/exception/{StudentNotFoundException,DuplicateEnrollmentException,
+InvalidStudentDataException}.java`, `playground/StudentRegistry.java`,
+`playground/ExceptionHandlingDemo.java`.
+
+### Why unchecked for our own exception types
+
+All three custom exceptions extend `RuntimeException`, not `Exception` — a deliberate
+choice, not a default. These represent business-rule/lookup failures (a duplicate student
+number, a student that doesn't exist), the same *category* of problem as
+`IllegalArgumentException` or `IllegalStateException` — both of which are themselves
+unchecked. Making them checked would force `throws` declarations onto every method up the
+call stack that might touch a `Student`, including, later, Spring service methods and
+lambda-based code (checked exceptions don't cross most functional interfaces cleanly).
+Spring's own exception hierarchy (`DataAccessException` and friends) is unchecked for the
+same reason. This is a case where "the compiler won't force you to handle it" is the
+*point*, not a loophole.
+
+### Two constructors, or one — designed for how each is actually thrown
+
+```java
+public class StudentNotFoundException extends RuntimeException {
+    public StudentNotFoundException(String message) { super(message); }
+    public StudentNotFoundException(String message, Throwable cause) { super(message, cause); }
+}
+```
+`StudentNotFoundException` and `DuplicateEnrollmentException` get both constructors —
+they might be thrown standalone (a straightforward "this doesn't exist") or, in principle,
+as a wrapper around some other failure.
+
+```java
+public class InvalidStudentDataException extends RuntimeException {
+    public InvalidStudentDataException(String message, Throwable cause) { super(message, cause); }
+}
+```
+`InvalidStudentDataException` only gets the `(message, cause)` constructor. It only ever
+makes sense as a translation of some other failure (see chaining, below), so there's no
+bare-message constructor to accidentally misuse — the class's shape enforces that at
+compile time, not just by convention.
+
+### Where they're thrown: no catching needed
+
+```java
+public void register(Student student) {
+    for (Student existing : students) {
+        if (existing.getStudentNumber().equals(student.getStudentNumber())) {
+            throw new DuplicateEnrollmentException(
+                    "Student " + student.getStudentNumber() + " is already registered");
+        }
+    }
+    students.add(student);
+}
+```
+`StudentRegistry.register()`/`findByStudentNumber()` just `throw` directly — there's no
+lower-level exception here to translate, so there's nothing to catch internally. The
+exception propagates straight up to wherever it's actually meaningful to handle it (in
+`ExceptionHandlingDemo`, that's a `try`/`catch` around each call).
+
+### Exception chaining — catching *in order to translate*
+
+```java
+private static int parseEnrollmentYear(String raw) {
+    try {
+        return Integer.parseInt(raw);
+    } catch (NumberFormatException e) {
+        throw new InvalidStudentDataException("Invalid enrollment year: '" + raw + "'", e);
+    }
+}
+```
+
+Output when called with `"not-a-year"`:
+```
+Caught: Invalid enrollment year: 'not-a-year'
+Caused by: java.lang.NumberFormatException: For input string: "not-a-year"
+```
+
+This is the pattern worth internalizing. `NumberFormatException` is a **low-level,
+technical** exception — it means nothing to whoever is registering a student. Catching it
+and re-throwing it as `InvalidStudentDataException`, passing the original exception as the
+second constructor argument (`e`), is **exception chaining**: the new exception's `cause`
+is set to the original. Nothing is lost — `e.getCause()` still returns the original
+`NumberFormatException` with its original message. In a real stack trace this shows up as
+`Caused by: java.lang.NumberFormatException: ...` printed beneath the main trace, so the
+root cause survives the translation instead of being thrown away.
+
+**What NOT to do**, for contrast: `catch (NumberFormatException e) { throw e; }` — catching
+only to rethrow the exact same exception unchanged accomplishes nothing; not catching it at
+all would behave identically. Catching is worth it only when you're either genuinely
+handling it right there, or translating it into something more meaningful for the caller
+(as above).

@@ -65,12 +65,15 @@ the natural next step right after inheritance/polymorphism, not a separate topic
 - **Interview payoff:** "why use an enum instead of a bunch of String/int constants" — and
   being able to say *why* from your own refactor, not just recite the textbook answer.
 
-## Module 3 — Java Refresher: Exception Handling (in progress)
+## Module 3 — Java Refresher: Exception Handling ✅
 - [x] Checked vs unchecked exceptions, the exception hierarchy
 - [x] `try`/`catch`/`finally`, try-with-resources
-- [ ] Custom exceptions (`StudentNotFoundException`, `DuplicateEnrollmentException`)
-- [ ] Exception chaining, when to catch vs rethrow
-- **Build:** validation logic in plain Java that throws custom exceptions (still no Spring).
+- [x] Custom exceptions (`StudentNotFoundException`, `DuplicateEnrollmentException`,
+      `InvalidStudentDataException`)
+- [x] Exception chaining, when to catch vs rethrow
+- **Build:** ✅ `domain/exception/{StudentNotFoundException,DuplicateEnrollmentException,
+  InvalidStudentDataException}.java`, `playground/StudentRegistry.java`,
+  `playground/ExceptionHandlingDemo.java`.
 - **Notes:** [notes/module-03-exception-handling.md](notes/module-03-exception-handling.md)
 - **Interview payoff:** "checked vs unchecked, when would you use a custom exception?"
 
