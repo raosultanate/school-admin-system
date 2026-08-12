@@ -6,3 +6,5 @@ wrote for it. Use these to review before the interview instead of re-reading old
 - [Module 1 — Inheritance & Polymorphism (and Encapsulation & Abstraction)](module-01-inheritance-polymorphism.md)
 - [Documentation & comment conventions](conventions.md) — not a module, just how this repo
   is organized
+- [Dependencies](dependencies.md) — every `pom.xml` entry, what it does, and when we start
+  using it

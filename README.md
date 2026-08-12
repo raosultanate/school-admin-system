@@ -17,7 +17,8 @@ learn Spring Boot (and refresh core Java) for an interview.
 
 - Java 21 (Temurin, via [SDKMAN](https://sdkman.io/))
 - Spring Boot 4.1, Maven
-- Spring Web, Spring Data JPA, H2 (dev), Bean Validation, Lombok, DevTools
+- See [`docs/notes/dependencies.md`](docs/notes/dependencies.md) for what each `pom.xml`
+  dependency does and why it's there
 
 ## Running
 
