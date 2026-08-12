@@ -41,12 +41,13 @@ finish, big enough to hit every mainstream Spring Boot concept.
 - **Interview payoff:** "explain the four pillars of OOP with an example" answered from
   your own code.
 
-## Module 2 — Java Refresher: Exception Handling
-- [ ] Checked vs unchecked exceptions, the exception hierarchy
-- [ ] `try`/`catch`/`finally`, try-with-resources
+## Module 2 — Java Refresher: Exception Handling (in progress)
+- [x] Checked vs unchecked exceptions, the exception hierarchy
+- [x] `try`/`catch`/`finally`, try-with-resources
 - [ ] Custom exceptions (`StudentNotFoundException`, `DuplicateEnrollmentException`)
 - [ ] Exception chaining, when to catch vs rethrow
 - **Build:** validation logic in plain Java that throws custom exceptions (still no Spring).
+- **Notes:** [notes/module-02-exception-handling.md](notes/module-02-exception-handling.md)
 - **Interview payoff:** "checked vs unchecked, when would you use a custom exception?"
 
 ## Module 3 — Spring Boot Fundamentals: IoC & Dependency Injection
