@@ -6,6 +6,7 @@ wrote for it. Use these to review before the interview instead of re-reading old
 - [Module 0 — Environment Setup](module-00-environment-setup.md) — how the JDK, Maven, VS
   Code, and the project itself were set up, and why
 - [Module 1 — Inheritance & Polymorphism (and Encapsulation & Abstraction)](module-01-inheritance-polymorphism.md)
+- [Module 2 — Enums](module-02-enums.md)
 - [Module 3 — Exception Handling](module-03-exception-handling.md)
 - [Documentation & comment conventions](conventions.md) — not a module, just how this repo
   is organized

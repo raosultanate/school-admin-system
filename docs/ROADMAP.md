@@ -49,19 +49,20 @@ the pain of *not* having one.
 - **Interview payoff:** "explain the four pillars of OOP with an example" answered from
   your own code.
 
-## Module 2 — Java Refresher: Enums
+## Module 2 — Java Refresher: Enums ✅
 *Still plain Java. An enum is really just a class with a fixed, known set of instances —
 the natural next step right after inheritance/polymorphism, not a separate topic.*
-- [ ] What an enum actually is under the hood (a class; each constant is a singleton
+- [x] What an enum actually is under the hood (a class; each constant is a singleton
       instance of it) — not just "a fancy list of constants"
-- [ ] Enums with fields, a constructor, and methods — not just bare names
-- [ ] `switch` over an enum
-- [ ] An enum implementing an interface — polymorphism again, in a new shape
-- [ ] `EnumMap`/`EnumSet` — worth knowing exist; explained properly once Module 4 covers
+- [x] Enums with fields, a constructor, and methods — not just bare names
+- [x] `switch` over an enum
+- [x] An enum implementing an interface — polymorphism again, in a new shape
+- [x] `EnumMap`/`EnumSet` — worth knowing exist; explained properly once Module 4 covers
       `Map`/`Set` in general
-- **Build:** replace `Admin`'s raw `String accessLevel` with a proper `AccessLevel` enum,
-  and consider a `Department` enum for `Teacher` — strengthens Module 1's domain model
-  instead of starting a disconnected new example.
+- **Build:** ✅ `domain/{HasLabel,AccessLevel,Department}.java`; `Admin`'s raw
+  `String accessLevel` replaced with `AccessLevel`, `Teacher`'s `String department`
+  replaced with `Department`; `playground/EnumDemo.java`.
+- **Notes:** [notes/module-02-enums.md](notes/module-02-enums.md)
 - **Interview payoff:** "why use an enum instead of a bunch of String/int constants" — and
   being able to say *why* from your own refactor, not just recite the textbook answer.
 
