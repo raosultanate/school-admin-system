@@ -17,6 +17,8 @@ public class ExceptionHandlingDemo {
 
     public static void main(String[] args) {
         StudentRegistry registry = new StudentRegistry();
+        // Register one real student up front so the two demos below have something to
+        // collide with / fail to find.
         registry.register(new Student("Ada", "Lovelace", "ada@school.edu", "S-1001"));
 
         demonstrateDuplicateEnrollment(registry);
@@ -26,14 +28,21 @@ public class ExceptionHandlingDemo {
 
     private static void demonstrateDuplicateEnrollment(StudentRegistry registry) {
         try {
+            // Same student number ("S-1001") as the one already registered in main() above,
+            // even though the name/email differ -- register() only checks the number, so
+            // this is guaranteed to throw DuplicateEnrollmentException.
             registry.register(new Student("Ada", "Lovelace", "ada2@school.edu", "S-1001"));
         } catch (DuplicateEnrollmentException e) {
+            // Caught here, not left to propagate, because there's something real to do
+            // about it: report it and let the program continue past this one failure.
             System.out.println("Caught: " + e.getMessage());
         }
     }
 
     private static void demonstrateStudentNotFound(StudentRegistry registry) {
         try {
+            // "S-9999" was never registered, so this is guaranteed to throw
+            // StudentNotFoundException.
             registry.findByStudentNumber("S-9999");
         } catch (StudentNotFoundException e) {
             System.out.println("Caught: " + e.getMessage());
@@ -42,9 +51,13 @@ public class ExceptionHandlingDemo {
 
     private static void demonstrateExceptionChaining() {
         try {
+            // "not-a-year" isn't a valid int, so parseEnrollmentYear (below) will fail
+            // internally and rethrow as InvalidStudentDataException.
             parseEnrollmentYear("not-a-year");
         } catch (InvalidStudentDataException e) {
             System.out.println("Caught: " + e.getMessage());
+            // getCause() returns the original NumberFormatException that parseEnrollmentYear
+            // caught and wrapped -- proof that chaining preserved it instead of losing it.
             System.out.println("Caused by: " + e.getCause());
         }
     }

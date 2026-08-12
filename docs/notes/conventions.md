@@ -28,8 +28,22 @@ Skip it for trivial getters (`getFirstName()`) — the method name already says 
 the Javadoc would, and restating it is noise, not documentation. (Some teams still require
 it project-wide via a linter; this project doesn't.)
 
-**Inline comments (`//`)** — reserved for the *why*, not the *what*. A comment explaining
-what a line does is a sign the code should be renamed/restructured to be self-explanatory
-instead. Only write one when there's a non-obvious reason behind a choice — a workaround, a
-constraint from elsewhere in the system, something that would genuinely surprise a reader.
-None of the code so far has needed one of these.
+**Inline comments (`//`)** — the rule differs by which package the file is in, because
+`domain/` and `playground/` serve different purposes in this project:
+
+- **`domain/`** (production-style code — `Person`, `Student`, `Teacher`, `Admin`, the
+  custom exceptions): reserved for the *why*, not the *what*. A comment explaining what a
+  line does is a sign the code should be renamed/restructured to be self-explanatory
+  instead. Only write one when there's a non-obvious reason behind a choice — a workaround,
+  a constraint, something that would genuinely surprise a reader (e.g. why an exception
+  extends `RuntimeException` rather than `Exception`).
+- **`playground/`** (standalone demo classes, one per module, each with a `main()`):
+  walkthrough comments are welcome even where the mechanics are "obvious" once you already
+  know Java — the entire point of these files is teaching the concept to someone who
+  doesn't yet, so a reader shouldn't have to cross-reference `docs/notes/` just to follow
+  what a demo is doing. `StudentRegistry` counts as `playground` for this purpose even
+  though it isn't itself a `main()` demo — it exists only to be exercised by one.
+
+This isn't a contradiction, it's matching the comment style to the file's job: `domain/`
+code is what the app is actually built from and should read the way production code reads;
+`playground/` code exists specifically to be read by a learner.
