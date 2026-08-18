@@ -37,12 +37,15 @@ not an organizing principle. Splitting by construct would scatter related domain
 across folders for no real benefit.
 
 Current/planned layout as later modules add to it:
-- `domain/` — entities, enums, interfaces, exceptions (`domain/exception/`) — in place
-  since Module 1
-- `repository/` — Spring Data repositories — Module 6
-- `service/` — business logic — Module 9
-- `controller/` — REST controllers — Module 7
-- `playground/` — standalone learning demos, explicitly outside this scheme (see below)
+- `domain/` — entities, enums, interfaces, exceptions (`domain/exception/`) — inherited
+  from the [`java-refresher`](../../java-refresher) project, where they were introduced
+- `repository/` — Spring Data repositories — Module 2
+- `service/` — business logic — Module 5
+- `controller/` — REST controllers — Module 3
+
+There is no `playground/` package in this project — the standalone, one-`main()`-per-module
+learning demos live in `java-refresher` instead, alongside the Java-language concepts they
+teach. Everything under `src/` here is meant to read as production-style code.
 
 ## Comment philosophy
 
@@ -61,22 +64,10 @@ Skip it for trivial getters (`getFirstName()`) — the method name already says 
 the Javadoc would, and restating it is noise, not documentation. (Some teams still require
 it project-wide via a linter; this project doesn't.)
 
-**Inline comments (`//`)** — the rule differs by which package the file is in, because
-`domain/` and `playground/` serve different purposes in this project:
-
-- **`domain/`** (production-style code — `Person`, `Student`, `Teacher`, `Admin`, the
-  custom exceptions): reserved for the *why*, not the *what*. A comment explaining what a
-  line does is a sign the code should be renamed/restructured to be self-explanatory
-  instead. Only write one when there's a non-obvious reason behind a choice — a workaround,
-  a constraint, something that would genuinely surprise a reader (e.g. why an exception
-  extends `RuntimeException` rather than `Exception`).
-- **`playground/`** (standalone demo classes, one per module, each with a `main()`):
-  walkthrough comments are welcome even where the mechanics are "obvious" once you already
-  know Java — the entire point of these files is teaching the concept to someone who
-  doesn't yet, so a reader shouldn't have to cross-reference `docs/notes/` just to follow
-  what a demo is doing. `StudentRegistry` counts as `playground` for this purpose even
-  though it isn't itself a `main()` demo — it exists only to be exercised by one.
-
-This isn't a contradiction, it's matching the comment style to the file's job: `domain/`
-code is what the app is actually built from and should read the way production code reads;
-`playground/` code exists specifically to be read by a learner.
+**Inline comments (`//`)** — reserved for the *why*, not the *what*. A comment explaining
+what a line does is a sign the code should be renamed/restructured to be self-explanatory
+instead. Only write one when there's a non-obvious reason behind a choice — a workaround, a
+constraint, something that would genuinely surprise a reader (e.g. why an exception extends
+`RuntimeException` rather than `Exception`). Everything under `src/` here is production-style
+code and should read that way — the teaching-oriented, walkthrough-comment style belongs to
+`java-refresher`'s `playground/` package, not this project.

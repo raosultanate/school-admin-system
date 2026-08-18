@@ -6,7 +6,8 @@ introduced or last changed it — don't expect this to be complete early on.
 ## Layered architecture (target shape)
 
 This is where we're *heading* — not everything here exists yet. As of Module 0, only the
-empty Spring Boot skeleton exists.
+empty Spring Boot skeleton exists (plus the `domain/` classes inherited from the
+[`java-refresher`](../java-refresher) project, which handled the core-Java modules).
 
 ```mermaid
 flowchart TD
@@ -24,11 +25,11 @@ flowchart TD
 
 **Why layers?** Each layer has one job: Controllers translate HTTP ⇄ Java, Services hold
 business rules, Repositories talk to the database. This keeps business logic testable
-without spinning up a web server or a database (see Module 11). Package organization is
+without spinning up a web server or a database (see Module 7). Package organization is
 by-layer, not by-feature — reasoning in
 [`notes/conventions.md`](notes/conventions.md#package-organization-by-layer-not-by-feature).
 
-## Domain model (target shape, grows through Modules 1–10)
+## Domain model (current shape from `java-refresher`, grows through Module 6)
 
 ```mermaid
 classDiagram
@@ -87,15 +88,16 @@ classDiagram
     Teacher "1" --> "many" Course : teaches
 ```
 
-_Enrollment is the join entity between Student and Course, introduced in Module 10. `Admin`,
-`AccessLevel`, `Department`, and `HasLabel` reflect Modules 1–2's actual code, not just a
-target — see [`notes/module-01-inheritance-polymorphism.md`](notes/module-01-inheritance-polymorphism.md)
-and [`notes/module-02-enums.md`](notes/module-02-enums.md)._
+_Enrollment is the join entity between Student and Course, introduced in Module 6. `Admin`,
+`AccessLevel`, `Department`, and `HasLabel` reflect the actual code inherited from
+[`java-refresher`](../java-refresher), not just a target — see that project's
+`docs/notes/module-01-inheritance-polymorphism.md` and `docs/notes/module-02-enums.md`._
 
 ## Status log
 
-- **Module 0:** project skeleton only, no code yet.
-- **Modules 1–3 (current):** `Person`/`Student`/`Teacher`/`Admin` exist as plain Java (no
-  JPA annotations yet — those arrive in Module 6), along with `HasLabel`/`AccessLevel`/
-  `Department` and the three custom exceptions. `Course`/`Enrollment` and the layered
-  architecture above are still target shape, not built yet — that starts Module 5.
+- **Module 0:** project skeleton only, no Spring code yet. `Person`/`Student`/`Teacher`/
+  `Admin` already exist as plain Java (no JPA annotations yet — those arrive in Module 2),
+  along with `HasLabel`/`AccessLevel`/`Department` and the three custom exceptions —
+  inherited as-is from the `java-refresher` project, where they were introduced and
+  explained. `Course`/`Enrollment` and the layered architecture above are still target
+  shape, not built yet — that starts Module 1.

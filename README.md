@@ -2,7 +2,11 @@
 
 A Spring Boot learning project: a small admin system for managing `Teacher`s, `Student`s,
 `Course`s, and enrollments. Built incrementally, module by module, as a hands-on way to
-learn Spring Boot (and refresh core Java) for an interview.
+learn Spring Boot for an interview.
+
+Core Java refreshers (OOP, enums, exceptions, collections/generics) live in a separate
+companion project, [`java-refresher`](../java-refresher) — this project's `domain/` classes
+started there and are still exactly what's used here, but this roadmap is Spring-only.
 
 ## Docs
 
@@ -29,19 +33,6 @@ learn Spring Boot (and refresh core Java) for an interview.
 New machine and don't have Java/Maven set up yet? See
 [`docs/notes/module-00-environment-setup.md`](docs/notes/module-00-environment-setup.md)
 for exactly how this environment (and the project itself) was set up.
-
-### Playground demos
-
-Early modules are plain Java, run standalone (no Spring context, no web server) rather
-than through the app above:
-
-```bash
-./mvnw -q compile
-java -cp target/classes com.schooladmin.system.playground.OopDemo               # Module 1
-java -cp target/classes com.schooladmin.system.playground.EnumDemo              # Module 2
-java -cp target/classes com.schooladmin.system.playground.ExceptionBasicsDemo   # Module 3
-java -cp target/classes com.schooladmin.system.playground.ExceptionHandlingDemo # Module 3
-```
 
 ## Status
 
