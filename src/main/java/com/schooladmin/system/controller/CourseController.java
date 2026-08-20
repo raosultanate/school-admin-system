@@ -30,12 +30,12 @@ public class CourseController {
     }
 
     @GetMapping
-    public List<CourseResponse> listAll() {
+    public List<CourseResponse> getAllCourses() {
         return courseRepository.findAll().stream().map(CourseResponse::from).toList();
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<CourseResponse> getOne(@PathVariable Long id) {
+    public ResponseEntity<CourseResponse> getCourseById(@PathVariable Long id) {
         return courseRepository.findById(id)
                 .map(CourseResponse::from)
                 .map(ResponseEntity::ok)
@@ -43,13 +43,13 @@ public class CourseController {
     }
 
     @PostMapping
-    public ResponseEntity<CourseResponse> create(@RequestBody CourseRequest request) {
+    public ResponseEntity<CourseResponse> createCourse(@RequestBody CourseRequest request) {
         Course saved = courseRepository.save(request.toEntity());
         return ResponseEntity.status(HttpStatus.CREATED).body(CourseResponse.from(saved));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<CourseResponse> update(@PathVariable Long id, @RequestBody CourseRequest request) {
+    public ResponseEntity<CourseResponse> updateCourse(@PathVariable Long id, @RequestBody CourseRequest request) {
         return courseRepository.findById(id)
                 .map(course -> {
                     course.updateFrom(request);
@@ -61,7 +61,7 @@ public class CourseController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@PathVariable Long id) {
+    public ResponseEntity<Void> deleteCourse(@PathVariable Long id) {
         if (!courseRepository.existsById(id)) {
             return ResponseEntity.notFound().build();
         }

@@ -31,12 +31,12 @@ public class TeacherController {
     }
 
     @GetMapping
-    public List<TeacherResponse> listAll() {
+    public List<TeacherResponse> getAllTeachers() {
         return teacherRepository.findAll().stream().map(TeacherResponse::from).toList();
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<TeacherResponse> getOne(@PathVariable Long id) {
+    public ResponseEntity<TeacherResponse> getTeacherById(@PathVariable Long id) {
         return teacherRepository.findById(id)
                 .map(TeacherResponse::from)
                 .map(ResponseEntity::ok)
@@ -44,13 +44,13 @@ public class TeacherController {
     }
 
     @PostMapping
-    public ResponseEntity<TeacherResponse> create(@RequestBody TeacherRequest request) {
+    public ResponseEntity<TeacherResponse> createTeacher(@RequestBody TeacherRequest request) {
         Teacher saved = teacherRepository.save(request.toEntity());
         return ResponseEntity.status(HttpStatus.CREATED).body(TeacherResponse.from(saved));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<TeacherResponse> update(@PathVariable Long id, @RequestBody TeacherRequest request) {
+    public ResponseEntity<TeacherResponse> updateTeacher(@PathVariable Long id, @RequestBody TeacherRequest request) {
         return teacherRepository.findById(id)
                 .map(teacher -> {
                     teacher.updateFrom(request);
@@ -62,7 +62,7 @@ public class TeacherController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@PathVariable Long id) {
+    public ResponseEntity<Void> deleteTeacher(@PathVariable Long id) {
         if (!teacherRepository.existsById(id)) {
             return ResponseEntity.notFound().build();
         }

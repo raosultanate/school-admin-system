@@ -28,7 +28,7 @@ public class StudentController {
     }
 
     @GetMapping
-    public List<StudentResponse> listAll() {
+    public List<StudentResponse> getAllStudents() {
         return studentRepository.findAll().stream().map(StudentResponse::from).toList();
     }
 
@@ -39,7 +39,7 @@ public class StudentController {
     // expected outcome, not a server failure. .map(...).orElseGet(...) chooses the correct
     // response for both branches explicitly: 200 with a body, or 404 with none.
     @GetMapping("/{id}")
-    public ResponseEntity<StudentResponse> getOne(@PathVariable Long id) {
+    public ResponseEntity<StudentResponse> getStudentById(@PathVariable Long id) {
         return studentRepository.findById(id)
                 .map(StudentResponse::from)
                 .map(ResponseEntity::ok)
@@ -50,16 +50,16 @@ public class StudentController {
     // per HTTP semantics. ResponseEntity.status(HttpStatus.CREATED) is how that's chosen
     // explicitly instead of accepting Spring's default.
     @PostMapping
-    public ResponseEntity<StudentResponse> create(@RequestBody StudentRequest request) {
+    public ResponseEntity<StudentResponse> createStudent(@RequestBody StudentRequest request) {
         Student saved = studentRepository.save(request.toEntity());
         return ResponseEntity.status(HttpStatus.CREATED).body(StudentResponse.from(saved));
     }
 
     // PUT: fetch the existing entity, apply the incoming request onto it (updateFrom), save
     // the SAME managed entity back -- an update, not an insert, because its id is already
-    // set. 404 if the id doesn't exist, same reasoning as getOne().
+    // set. 404 if the id doesn't exist, same reasoning as getStudentById().
     @PutMapping("/{id}")
-    public ResponseEntity<StudentResponse> update(@PathVariable Long id, @RequestBody StudentRequest request) {
+    public ResponseEntity<StudentResponse> updateStudent(@PathVariable Long id, @RequestBody StudentRequest request) {
         return studentRepository.findById(id)
                 .map(student -> {
                     student.updateFrom(request);
@@ -75,7 +75,7 @@ public class StudentController {
     // deleteById()'s own (version-dependent) behavior for a nonexistent row.
     // 204 No Content: the correct status for "succeeded, nothing to send back."
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@PathVariable Long id) {
+    public ResponseEntity<Void> deleteStudent(@PathVariable Long id) {
         if (!studentRepository.existsById(id)) {
             return ResponseEntity.notFound().build();
         }
