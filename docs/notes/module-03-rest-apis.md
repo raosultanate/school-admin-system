@@ -93,7 +93,7 @@ normal, expected outcome, not a server failure.
 
 ```java
 @GetMapping("/{id}")
-public ResponseEntity<StudentResponse> getOne(@PathVariable Long id) {
+public ResponseEntity<StudentResponse> getStudentById(@PathVariable Long id) {
     return studentRepository.findById(id)
             .map(StudentResponse::from)
             .map(ResponseEntity::ok)

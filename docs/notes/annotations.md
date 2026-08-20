@@ -50,8 +50,8 @@ not "is this a bean," but "which bean method does this specific request go to."
 |---|---|---|---|
 | `@RequestMapping("/api/students")` | A base path every endpoint in the class is relative to — `@GetMapping` inside this class means `GET /api/students`, not just `GET /`. | `StudentController` class | Module 3 |
 | `@GetMapping`/`@PostMapping`/`@PutMapping`/`@DeleteMapping` | Maps one method to one HTTP verb (+ optional path suffix, e.g. `@GetMapping("/{id}")`). Same idea as `@RequestMapping`, specialized per verb — `@GetMapping` is shorthand for `@RequestMapping(method = GET)`. | All four `Student`/`Teacher`/`Course` controller methods | Module 3 |
-| `@PathVariable` | Pulls a `{...}` segment out of the URL and passes it as the annotated method parameter — `@GetMapping("/{id}")` + `@PathVariable Long id` means whatever's in that URL slot becomes `id`. | `getOne(@PathVariable Long id)` | Module 3 |
-| `@RequestBody` | Deserializes the incoming HTTP request body (JSON) into the annotated parameter's type, via Jackson. What made the DTO/entity-binding vulnerability (and its fix) possible to demonstrate at all. | `create(@RequestBody StudentRequest request)` | Module 3 |
+| `@PathVariable` | Pulls a `{...}` segment out of the URL and passes it as the annotated method parameter — `@GetMapping("/{id}")` + `@PathVariable Long id` means whatever's in that URL slot becomes `id`. | `getStudentById(@PathVariable Long id)` | Module 3 |
+| `@RequestBody` | Deserializes the incoming HTTP request body (JSON) into the annotated parameter's type, via Jackson. What made the DTO/entity-binding vulnerability (and its fix) possible to demonstrate at all. | `createStudent(@RequestBody StudentRequest request)` | Module 3 |
 
 **Not an annotation, but essential to this module:** `ResponseEntity<T>` is a regular Java
 class that wraps a response body together with an explicit HTTP status code and headers —
@@ -59,7 +59,7 @@ class that wraps a response body together with an explicit HTTP status code and 
 (201), `ResponseEntity.notFound().build()` (404, no body), `ResponseEntity.noContent().build()`
 (204). Without it, every endpoint just gets Spring's default (200 for anything returned
 normally), which is wrong for a missing resource (should be 404) or a fresh creation
-(should be 201) — confirmed live in `StudentController.getOne()`, which returned 500 before
+(should be 201) — confirmed live in `StudentController.getStudentById()`, which returned 500 before
 this was introduced and 404 after.
 
 ## JPA / Hibernate annotations — a different system entirely

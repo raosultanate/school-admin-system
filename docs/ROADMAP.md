@@ -76,7 +76,7 @@ scratch.
       field — structurally impossible to repeat, not just guarded against); re-ran the
       identical attack against the fix and confirmed it now creates a new row instead.
 - [x] `ResponseEntity`, status codes — `200`/`201`/`404`/`204` all confirmed live; fixed
-      `getOne()` returning `500` on a missing id (should be, and now is, `404`)
+      `getStudentById()` returning `500` on a missing id (should be, and now is, `404`)
 - **Build:** ✅ full CRUD (`GET` all, `GET` one, `POST`, `PUT`, `DELETE`) for **Students,
   Teachers, and Courses** — went beyond the original Student/Teacher scope since the pattern
   was already proven. All exercised live with `curl`.
