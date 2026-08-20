@@ -100,4 +100,9 @@ _Enrollment is the join entity between Student and Course, introduced in Module 
   along with `HasLabel`/`AccessLevel`/`Department` and the three custom exceptions —
   inherited as-is from the `java-refresher` project, where they were introduced and
   explained. `Course`/`Enrollment` and the layered architecture above are still target
-  shape, not built yet — that starts Module 1.
+  shape, not built yet.
+- **Module 1:** the `service/` layer is real, not just target shape — `PersonService`
+  (`@Service`, constructor-injected with a `List<Person>` bean) plus
+  `PersonServiceStartupRunner` (`CommandLineRunner`), both confirmed live via
+  `./mvnw spring-boot:run`. `controller/` and `repository/` are still target shape — those
+  start Modules 3 and 2 respectively.

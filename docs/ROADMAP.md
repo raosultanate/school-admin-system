@@ -32,14 +32,21 @@ scratch.
 - [x] git init this project, publish to GitHub
 - **Notes:** [notes/module-00-environment-setup.md](notes/module-00-environment-setup.md)
 
-## Module 1 — Spring Boot Fundamentals: IoC & Dependency Injection
-- [ ] What `@SpringBootApplication` actually does (auto-config, component scan)
-- [ ] The IoC container / `ApplicationContext`
-- [ ] `@Component`, `@Service`, `@Repository`, `@Autowired`, constructor injection
-- [ ] Bean lifecycle basics
-- **Build:** turn the existing domain classes into Spring-managed services, wire a simple
-  `PersonService` via constructor injection, run it in the app context.
-- **Diagram:** `docs/architecture.md` gets its first layered-architecture sketch.
+## Module 1 — Spring Boot Fundamentals: IoC & Dependency Injection ✅
+- [x] What `@SpringBootApplication` actually does (auto-config, component scan)
+- [x] The IoC container / `ApplicationContext`
+- [x] `@Component`, `@Service`, `@Repository` (concept only — a real one arrives in Module
+      2), `@Autowired` (and why it's not needed here), constructor injection
+- [x] Bean lifecycle basics (`@PostConstruct`/`@PreDestroy`, singleton scope) — confirmed
+      live: startup order (constructed → `@PostConstruct`) and shutdown order
+      (`@PreDestroy` → resources closed)
+- **Build:** ✅ `service/PersonService.java` (constructor-injected with a `List<Person>`
+  `@Bean` from `SchoolAdminSystemApplication`), `PersonServiceStartupRunner.java` (a
+  `CommandLineRunner` proving the whole graph gets wired and runs through the container).
+- **Notes:** [notes/module-01-ioc-dependency-injection.md](notes/module-01-ioc-dependency-injection.md),
+  [notes/annotations.md](notes/annotations.md)
+- **Interview payoff:** "what is dependency injection / IoC, and why constructor injection
+  over field injection" answered from your own wiring, not the textbook version.
 
 ## Module 2 — Persistence: JPA, Hibernate, Spring Data
 - [ ] `@Entity`, `@Id`, `@GeneratedValue`, column mapping
