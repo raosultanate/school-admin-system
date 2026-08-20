@@ -5,11 +5,15 @@ introduced or last changed it — don't expect this to be complete early on.
 
 ## Layered architecture (target shape)
 
-As of Module 3, every layer shown here has real code in it — but the `Controller → Service`
-arrow is still target shape: `StudentController`/`TeacherController`/`CourseController` call
-their repositories **directly**, skipping `service/` entirely (only `PersonService` exists
-so far, and nothing calls it from a controller). That gap closes in Module 5, once there's
-actual business logic worth putting a service in front of — CRUD alone doesn't need one.
+As of Module 4, every layer shown here has real code in it, and the `Controller → Service`
+arrow is real for all three resources: `StudentController`/`TeacherController`/
+`CourseController` each call their own service (`StudentService`/`TeacherService`/
+`CourseService`), never their repository directly. `StudentService` earned its place with a
+real business rule (student-number generation); `Teacher`/`Course`'s services started out as
+thin pass-throughs, added for **consistency** (uniform exception-throwing/handling across
+all three) rather than an existing business rule of their own — a deliberate choice once the
+question "should this be a service?" came up mid-module. Module 5 deepens all of this further
+(`@Transactional`, the Strategy pattern) once `Course`/`Enrollment` relationships exist.
 
 ```mermaid
 flowchart TD
@@ -155,3 +159,15 @@ each table directly — there's no `persons` table anywhere.
   `StudentResponse` and matching pairs for `Teacher`/`Course`, added after demonstrating
   live that returning/accepting entities directly let a `POST` silently overwrite an
   existing row by id.
+- **Module 4:** the `Controller → Service` arrow is real for all three resources —
+  `StudentService` (earlier than Module 5's planned service-layer introduction, kept small
+  and deliberate) owns student-number generation and throws `StudentNotFoundException`;
+  `TeacherService`/`CourseService` followed for consistency once the question "should this
+  be a service?" came up mid-module, even though they started as thin pass-throughs with no
+  business rule of their own yet. All three controllers now only do HTTP ⇄ Java translation.
+  `GlobalExceptionHandler` (`@RestControllerAdvice`) applies to all three automatically, via
+  one shared abstract `NotFoundException` base class (`StudentNotFoundException`/
+  `TeacherNotFoundException`/`CourseNotFoundException` all extend it) rather than one
+  handler method per resource. `studentNumber` changed from client-supplied to
+  server-generated (a surrogate-key-vs-natural-key discussion — `id` and `studentNumber`
+  are different kinds of identifier, not redundant).

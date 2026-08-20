@@ -55,12 +55,13 @@ public class Student extends Person {
     // Reassigns every field from a StudentRequest onto this ALREADY-PERSISTED entity, for
     // the PUT/update flow. Kept as one method here rather than a pile of individual setter
     // calls scattered in the controller -- "how an update applies" is the entity's business,
-    // same reasoning as toEntity() living on StudentRequest for creation.
+    // same reasoning as toEntity() living on StudentRequest for creation. studentNumber is
+    // deliberately NOT reassigned here -- it isn't part of StudentRequest at all, so a PUT
+    // can never change the school-issued number a student was given at creation.
     public void updateFrom(StudentRequest request) {
         setFirstName(request.firstName());
         setLastName(request.lastName());
         setEmail(request.email());
-        this.studentNumber = request.studentNumber();
         this.enrollmentYear = request.enrollmentYear();
     }
 

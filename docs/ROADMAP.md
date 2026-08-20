@@ -84,13 +84,30 @@ scratch.
 - **Interview payoff:** "why use DTOs instead of returning entities" answered with a real
   security bug you caused and fixed yourself, not the textbook reasons.
 
-## Module 4 — Validation & Exception Handling in Spring
+## Module 4 — Validation & Exception Handling in Spring ✅
 *Ties directly back to the custom exceptions already in `domain/exception/`
 (`StudentNotFoundException`, `DuplicateEnrollmentException`, `InvalidStudentDataException`).*
-- [ ] Bean Validation (`@Valid`, `@NotNull`, `@Size`, etc.)
-- [ ] `@ControllerAdvice` + `@ExceptionHandler` — mapping custom exceptions to HTTP status
-- [ ] Consistent error response shape
-- **Build:** wire the existing custom exceptions into a global exception handler.
+- [x] Bean Validation (`@Valid`, `@NotBlank`, `@Email`, `@Min`/`@Max`, `@NotNull`) — proven
+      live: garbage course data (blank title, negative capacity) went from a silently
+      accepted `201` to a clean `400`
+- [x] `@RestControllerAdvice` + `@ExceptionHandler` — mapping custom exceptions to HTTP
+      status. Applies to all three controllers automatically, none reference it directly.
+- [x] Consistent error response shape (`ErrorResponse`) — deliberately excludes stack traces/
+      internal detail, replacing a real leaked-stack-trace `500` (confirmed live before the
+      fix) with a clean `409`
+- **Build:** ✅ `GlobalExceptionHandler` wires a shared abstract `NotFoundException` (404) —
+  `StudentNotFoundException`/`TeacherNotFoundException`/`CourseNotFoundException` all extend
+  it, one handler method covers all three (and any future subtype, automatically) —
+  `DuplicateEnrollmentException` (409, registered though not currently triggered —
+  `studentNumber` became server-generated mid-module), `InvalidStudentDataException` (400,
+  also registered for completeness), `MethodArgumentNotValidException` (400), and
+  `DataIntegrityViolationException` (409, defensive backstop). New `StudentService`/
+  `TeacherService`/`CourseService` (earlier than Module 5, kept small and honest) throw the
+  not-found exceptions and simplify all three controllers to pure HTTP ⇄ Java translation.
+- **Notes:** [notes/module-04-validation-exceptions.md](notes/module-04-validation-exceptions.md)
+- **Interview payoff:** "how do you handle validation and errors consistently across a
+  Spring REST API" answered with a real leaked-stack-trace bug you caused and fixed
+  yourself, not the textbook version.
 
 ## Module 5 — Service Layer, Transactions & Interfaces
 - [ ] `@Transactional` and why it matters

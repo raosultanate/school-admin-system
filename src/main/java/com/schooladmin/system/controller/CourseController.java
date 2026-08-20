@@ -1,9 +1,9 @@
 package com.schooladmin.system.controller;
 
-import com.schooladmin.system.domain.Course;
 import com.schooladmin.system.dto.CourseRequest;
 import com.schooladmin.system.dto.CourseResponse;
-import com.schooladmin.system.repository.CourseRepository;
+import com.schooladmin.system.service.CourseService;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -23,49 +23,36 @@ import java.util.List;
 @RequestMapping("/api/courses")
 public class CourseController {
 
-    private final CourseRepository courseRepository;
+    private final CourseService courseService;
 
-    public CourseController(CourseRepository courseRepository) {
-        this.courseRepository = courseRepository;
+    public CourseController(CourseService courseService) {
+        this.courseService = courseService;
     }
 
     @GetMapping
     public List<CourseResponse> getAllCourses() {
-        return courseRepository.findAll().stream().map(CourseResponse::from).toList();
+        return courseService.findAll().stream().map(CourseResponse::from).toList();
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<CourseResponse> getCourseById(@PathVariable Long id) {
-        return courseRepository.findById(id)
-                .map(CourseResponse::from)
-                .map(ResponseEntity::ok)
-                .orElseGet(() -> ResponseEntity.notFound().build());
+    public CourseResponse getCourseById(@PathVariable Long id) {
+        return CourseResponse.from(courseService.findById(id));
     }
 
     @PostMapping
-    public ResponseEntity<CourseResponse> createCourse(@RequestBody CourseRequest request) {
-        Course saved = courseRepository.save(request.toEntity());
-        return ResponseEntity.status(HttpStatus.CREATED).body(CourseResponse.from(saved));
+    public ResponseEntity<CourseResponse> createCourse(@Valid @RequestBody CourseRequest request) {
+        CourseResponse created = CourseResponse.from(courseService.create(request));
+        return ResponseEntity.status(HttpStatus.CREATED).body(created);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<CourseResponse> updateCourse(@PathVariable Long id, @RequestBody CourseRequest request) {
-        return courseRepository.findById(id)
-                .map(course -> {
-                    course.updateFrom(request);
-                    return courseRepository.save(course);
-                })
-                .map(CourseResponse::from)
-                .map(ResponseEntity::ok)
-                .orElseGet(() -> ResponseEntity.notFound().build());
+    public CourseResponse updateCourse(@PathVariable Long id, @Valid @RequestBody CourseRequest request) {
+        return CourseResponse.from(courseService.update(id, request));
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteCourse(@PathVariable Long id) {
-        if (!courseRepository.existsById(id)) {
-            return ResponseEntity.notFound().build();
-        }
-        courseRepository.deleteById(id);
+        courseService.delete(id);
         return ResponseEntity.noContent().build();
     }
 }

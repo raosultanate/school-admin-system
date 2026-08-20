@@ -1,9 +1,9 @@
 package com.schooladmin.system.controller;
 
-import com.schooladmin.system.domain.Student;
 import com.schooladmin.system.dto.StudentRequest;
 import com.schooladmin.system.dto.StudentResponse;
-import com.schooladmin.system.repository.StudentRepository;
+import com.schooladmin.system.service.StudentService;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -17,69 +17,49 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
+// Thin now, on purpose: every not-found/status-code decision that used to live here moved
+// into StudentService (throwing StudentNotFoundException) and GlobalExceptionHandler
+// (translating that into 404). This controller's only job left is HTTP ⇄ Java translation.
 @RestController
 @RequestMapping("/api/students")
 public class StudentController {
 
-    private final StudentRepository studentRepository;
+    private final StudentService studentService;
 
-    public StudentController(StudentRepository studentRepository) {
-        this.studentRepository = studentRepository;
+    public StudentController(StudentService studentService) {
+        this.studentService = studentService;
     }
 
     @GetMapping
     public List<StudentResponse> getAllStudents() {
-        return studentRepository.findAll().stream().map(StudentResponse::from).toList();
+        return studentService.findAll().stream().map(StudentResponse::from).toList();
     }
 
-    // ResponseEntity<T>: lets a method return a body AND explicitly choose the HTTP status,
-    // instead of always getting Spring's default (200 OK for anything returned normally).
-    // Before: findById(id).orElseThrow() -- an uncaught exception on a missing id, which
-    // Spring turns into 500 Internal Server Error. Wrong status: a missing id is a normal,
-    // expected outcome, not a server failure. .map(...).orElseGet(...) chooses the correct
-    // response for both branches explicitly: 200 with a body, or 404 with none.
+    // No ResponseEntity/404 branch needed anymore -- studentService.findById() throws
+    // StudentNotFoundException on a miss, and GlobalExceptionHandler turns that into 404.
+    // A plain return here always means success (200), same as getAllStudents() above.
     @GetMapping("/{id}")
-    public ResponseEntity<StudentResponse> getStudentById(@PathVariable Long id) {
-        return studentRepository.findById(id)
-                .map(StudentResponse::from)
-                .map(ResponseEntity::ok)
-                .orElseGet(() -> ResponseEntity.notFound().build());
+    public StudentResponse getStudentById(@PathVariable Long id) {
+        return StudentResponse.from(studentService.findById(id));
     }
 
-    // 201 Created, not the default 200 -- the correct status for "a new resource now exists"
-    // per HTTP semantics. ResponseEntity.status(HttpStatus.CREATED) is how that's chosen
-    // explicitly instead of accepting Spring's default.
+    // 201 Created still needs ResponseEntity explicitly -- there's no exception involved on
+    // the success path, just a status code that isn't Spring's 200 default.
     @PostMapping
-    public ResponseEntity<StudentResponse> createStudent(@RequestBody StudentRequest request) {
-        Student saved = studentRepository.save(request.toEntity());
-        return ResponseEntity.status(HttpStatus.CREATED).body(StudentResponse.from(saved));
+    public ResponseEntity<StudentResponse> createStudent(@Valid @RequestBody StudentRequest request) {
+        StudentResponse created = StudentResponse.from(studentService.create(request));
+        return ResponseEntity.status(HttpStatus.CREATED).body(created);
     }
 
-    // PUT: fetch the existing entity, apply the incoming request onto it (updateFrom), save
-    // the SAME managed entity back -- an update, not an insert, because its id is already
-    // set. 404 if the id doesn't exist, same reasoning as getStudentById().
     @PutMapping("/{id}")
-    public ResponseEntity<StudentResponse> updateStudent(@PathVariable Long id, @RequestBody StudentRequest request) {
-        return studentRepository.findById(id)
-                .map(student -> {
-                    student.updateFrom(request);
-                    return studentRepository.save(student);
-                })
-                .map(StudentResponse::from)
-                .map(ResponseEntity::ok)
-                .orElseGet(() -> ResponseEntity.notFound().build());
+    public StudentResponse updateStudent(@PathVariable Long id, @Valid @RequestBody StudentRequest request) {
+        return StudentResponse.from(studentService.update(id, request));
     }
 
-    // existsById() checked first, deliberately, rather than calling deleteById() blindly --
-    // gives an honest 404 for a missing id instead of silently no-op'ing or relying on
-    // deleteById()'s own (version-dependent) behavior for a nonexistent row.
-    // 204 No Content: the correct status for "succeeded, nothing to send back."
+    // 204 still needs ResponseEntity explicitly, same reasoning as 201 above.
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteStudent(@PathVariable Long id) {
-        if (!studentRepository.existsById(id)) {
-            return ResponseEntity.notFound().build();
-        }
-        studentRepository.deleteById(id);
+        studentService.delete(id);
         return ResponseEntity.noContent().build();
     }
 }

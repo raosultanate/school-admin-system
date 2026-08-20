@@ -1,9 +1,9 @@
 package com.schooladmin.system.controller;
 
-import com.schooladmin.system.domain.Teacher;
 import com.schooladmin.system.dto.TeacherRequest;
 import com.schooladmin.system.dto.TeacherResponse;
-import com.schooladmin.system.repository.TeacherRepository;
+import com.schooladmin.system.service.TeacherService;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -17,56 +17,42 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
-// Same shape as StudentController throughout -- same annotations, same ResponseEntity/status
-// code choices, same reasoning. Not repeated in comments here; see StudentController for the
-// explanations.
+// Same shape as StudentController throughout -- see StudentController for the
+// ResponseEntity/status code reasoning, not repeated here.
 @RestController
 @RequestMapping("/api/teachers")
 public class TeacherController {
 
-    private final TeacherRepository teacherRepository;
+    private final TeacherService teacherService;
 
-    public TeacherController(TeacherRepository teacherRepository) {
-        this.teacherRepository = teacherRepository;
+    public TeacherController(TeacherService teacherService) {
+        this.teacherService = teacherService;
     }
 
     @GetMapping
     public List<TeacherResponse> getAllTeachers() {
-        return teacherRepository.findAll().stream().map(TeacherResponse::from).toList();
+        return teacherService.findAll().stream().map(TeacherResponse::from).toList();
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<TeacherResponse> getTeacherById(@PathVariable Long id) {
-        return teacherRepository.findById(id)
-                .map(TeacherResponse::from)
-                .map(ResponseEntity::ok)
-                .orElseGet(() -> ResponseEntity.notFound().build());
+    public TeacherResponse getTeacherById(@PathVariable Long id) {
+        return TeacherResponse.from(teacherService.findById(id));
     }
 
     @PostMapping
-    public ResponseEntity<TeacherResponse> createTeacher(@RequestBody TeacherRequest request) {
-        Teacher saved = teacherRepository.save(request.toEntity());
-        return ResponseEntity.status(HttpStatus.CREATED).body(TeacherResponse.from(saved));
+    public ResponseEntity<TeacherResponse> createTeacher(@Valid @RequestBody TeacherRequest request) {
+        TeacherResponse created = TeacherResponse.from(teacherService.create(request));
+        return ResponseEntity.status(HttpStatus.CREATED).body(created);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<TeacherResponse> updateTeacher(@PathVariable Long id, @RequestBody TeacherRequest request) {
-        return teacherRepository.findById(id)
-                .map(teacher -> {
-                    teacher.updateFrom(request);
-                    return teacherRepository.save(teacher);
-                })
-                .map(TeacherResponse::from)
-                .map(ResponseEntity::ok)
-                .orElseGet(() -> ResponseEntity.notFound().build());
+    public TeacherResponse updateTeacher(@PathVariable Long id, @Valid @RequestBody TeacherRequest request) {
+        return TeacherResponse.from(teacherService.update(id, request));
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteTeacher(@PathVariable Long id) {
-        if (!teacherRepository.existsById(id)) {
-            return ResponseEntity.notFound().build();
-        }
-        teacherRepository.deleteById(id);
+        teacherService.delete(id);
         return ResponseEntity.noContent().build();
     }
 }

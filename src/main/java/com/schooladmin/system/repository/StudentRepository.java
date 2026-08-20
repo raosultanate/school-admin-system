@@ -22,4 +22,9 @@ public interface StudentRepository extends JpaRepository<Student, Long> {
     // findByStudentNumber() (java-refresher, Module 3) did by hand with a linear List scan.
     // Here the database does the lookup directly instead.
     Optional<Student> findByStudentNumber(String studentNumber);
+
+    // existsBy... instead of findBy...: same derived-query mechanism, but generates a
+    // lighter SELECT COUNT/EXISTS query -- no need to fetch a whole Student just to check
+    // whether a candidate generated number is already taken.
+    boolean existsByStudentNumber(String studentNumber);
 }

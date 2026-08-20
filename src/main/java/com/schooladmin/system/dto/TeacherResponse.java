@@ -3,6 +3,7 @@ package com.schooladmin.system.dto;
 import com.schooladmin.system.domain.Department;
 import com.schooladmin.system.domain.Teacher;
 
+/** What a {@link Teacher} looks like over the API. */
 public record TeacherResponse(
         Long id,
         String firstName,

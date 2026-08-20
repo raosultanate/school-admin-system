@@ -52,6 +52,8 @@ not "is this a bean," but "which bean method does this specific request go to."
 | `@GetMapping`/`@PostMapping`/`@PutMapping`/`@DeleteMapping` | Maps one method to one HTTP verb (+ optional path suffix, e.g. `@GetMapping("/{id}")`). Same idea as `@RequestMapping`, specialized per verb — `@GetMapping` is shorthand for `@RequestMapping(method = GET)`. | All four `Student`/`Teacher`/`Course` controller methods | Module 3 |
 | `@PathVariable` | Pulls a `{...}` segment out of the URL and passes it as the annotated method parameter — `@GetMapping("/{id}")` + `@PathVariable Long id` means whatever's in that URL slot becomes `id`. | `getStudentById(@PathVariable Long id)` | Module 3 |
 | `@RequestBody` | Deserializes the incoming HTTP request body (JSON) into the annotated parameter's type, via Jackson. What made the DTO/entity-binding vulnerability (and its fix) possible to demonstrate at all. | `createStudent(@RequestBody StudentRequest request)` | Module 3 |
+| `@RestControllerAdvice` | A `@Component` that intercepts exceptions thrown by *any* `@RestController` in the whole app, not just one — applies to `Student`/`Teacher`/`Course` controllers automatically, none of them reference it. Combines `@ControllerAdvice` (the interception) with `@RestController`'s "write the return value straight into the response body as JSON" behavior. | `GlobalExceptionHandler` class | Module 4 |
+| `@ExceptionHandler(SomeException.class)` | Marks a method inside a `@RestControllerAdvice` (or a controller itself) as the handler for one specific exception type. When that exception reaches Spring uncaught, this method runs instead of Spring's own default error handling — confirmed live: replaced a `500` with a full leaked stack trace with a clean `404`/`409`/`400` and a consistent body shape. | Every method in `GlobalExceptionHandler` | Module 4 |
 
 **Not an annotation, but essential to this module:** `ResponseEntity<T>` is a regular Java
 class that wraps a response body together with an explicit HTTP status code and headers —
@@ -80,9 +82,29 @@ these classes are `@Component`s just because they're entities.
 | `@Table(name = "...")` | Names the table explicitly. Without it, Hibernate's default naming strategy derives a name from the class name (typically the singular, lowercased class name) — being explicit avoids depending on that default. | `Student`, `Teacher`, `Course` classes | Module 2 |
 | `@Enumerated(EnumType.STRING)` | Controls how an enum field is stored. Without it, Hibernate defaults to `EnumType.ORDINAL` — storing the constant's *declaration position* (0, 1, 2...) as a plain integer, which silently breaks if the enum's order ever changes. `STRING` stores the constant's actual name instead — self-describing, safe against reordering. | `Teacher.department` | Module 2 |
 
+## Bean Validation annotations — a fourth, separate system
+
+Yet another distinct annotation system (`jakarta.validation`, Hibernate Validator is the
+implementation on the classpath) — nothing to do with Spring's container, HTTP routing, or
+JPA/Hibernate's table mapping. These are read by the Bean Validation framework, triggered
+specifically by `@Valid` appearing on a method parameter.
+
+| Annotation | What it does | Where it's used | First appeared |
+|---|---|---|---|
+| `@Valid` | Put on a `@RequestBody` parameter -- tells Spring to run Bean Validation on the deserialized object *before* the controller method body executes. A failure throws `MethodArgumentNotValidException` automatically; the method body never runs at all. | `createStudent(@Valid @RequestBody StudentRequest request)` and the `Teacher`/`Course` equivalents | Module 4 |
+| `@NotBlank` | Fails if the field is `null`, empty, or all whitespace. | `StudentRequest.firstName`/`lastName`/`email`, `TeacherRequest`'s equivalents, `CourseRequest.title` | Module 4 |
+| `@Email` | Fails if the field isn't shaped like a valid email address. Stacks with `@NotBlank` on the same field — both must pass. | `StudentRequest.email`, `TeacherRequest.email` | Module 4 |
+| `@Min`/`@Max` | Fails if a numeric field is below/above the given bound. | `StudentRequest.enrollmentYear` (2000-2100), `CourseRequest.capacity` (`@Min(1)`) | Module 4 |
+| `@NotNull` | Fails if the field is `null` -- for non-`String` types where `@NotBlank` doesn't apply. | `TeacherRequest.department` | Module 4 |
+
+Confirmed live: `POST /api/courses` with `{"title": "", "capacity": -500}` went from a
+silently-accepted `201` (no validation existed) to a `400` with
+`"capacity: must be at least 1; title: must not be blank"` once `@Valid` + these annotations
+were added.
+
 ## Rule going forward
 
 Every time a new annotation gets used for the first time, it gets a row here — what it
 does, in plain terms, and where to see it actually being used in this codebase, in whichever
-table it belongs to (Spring DI, Web/REST, or JPA/Hibernate — three separate systems, same
-`@` syntax).
+table it belongs to (Spring DI, Web/REST, JPA/Hibernate, or Bean Validation — four separate
+systems, same `@` syntax).
