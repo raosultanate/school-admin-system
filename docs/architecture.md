@@ -5,9 +5,11 @@ introduced or last changed it — don't expect this to be complete early on.
 
 ## Layered architecture (target shape)
 
-This is where we're *heading* — not everything here exists yet. As of Module 0, only the
-empty Spring Boot skeleton exists (plus the `domain/` classes inherited from the
-[`java-refresher`](../java-refresher) project, which handled the core-Java modules).
+As of Module 3, every layer shown here has real code in it — but the `Controller → Service`
+arrow is still target shape: `StudentController`/`TeacherController`/`CourseController` call
+their repositories **directly**, skipping `service/` entirely (only `PersonService` exists
+so far, and nothing calls it from a controller). That gap closes in Module 5, once there's
+actual business logic worth putting a service in front of — CRUD alone doesn't need one.
 
 ```mermaid
 flowchart TD
@@ -147,3 +149,9 @@ each table directly — there's no `persons` table anywhere.
   the logs). `Person` is `@MappedSuperclass`; `Student`/`Teacher`/`Course` are `@Entity`.
   `Course` is a genuinely new class, didn't exist before this module. `controller/` is still
   target shape — starts Module 3.
+- **Module 3:** the `controller/` layer is real — full CRUD (`GET`/`POST`/`PUT`/`DELETE`)
+  for all three resources, calling `repository/` directly (`service/` not yet in this path —
+  see the note above the layered diagram). New `dto/` package: `StudentRequest`/
+  `StudentResponse` and matching pairs for `Teacher`/`Course`, added after demonstrating
+  live that returning/accepting entities directly let a `POST` silently overwrite an
+  existing row by id.

@@ -7,6 +7,7 @@ wrote for it. Use these to review before the interview instead of re-reading old
   Code, and the project itself were set up, and why
 - [Module 1 — IoC & Dependency Injection](module-01-ioc-dependency-injection.md)
 - [Module 2 — Persistence: JPA, Hibernate, Spring Data](module-02-jpa-persistence.md)
+- [Module 3 — REST APIs](module-03-rest-apis.md)
 - [Documentation & comment conventions](conventions.md) — not a module, just how this repo
   is organized
 - [Dependencies](dependencies.md) — every `pom.xml` entry, what it does, and when we start

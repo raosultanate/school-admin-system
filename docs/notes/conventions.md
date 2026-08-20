@@ -40,8 +40,11 @@ Current/planned layout as later modules add to it:
 - `domain/` — entities, enums, interfaces, exceptions (`domain/exception/`) — inherited
   from the [`java-refresher`](../../java-refresher) project, where they were introduced
 - `repository/` — Spring Data repositories — Module 2
-- `service/` — business logic — Module 5
+- `service/` — business logic — Module 1 (deepens with transactions/Strategy in Module 5)
 - `controller/` — REST controllers — Module 3
+- `dto/` — request/response records for the API boundary, one pair per entity
+  (`StudentRequest`/`StudentResponse`, etc.) — Module 3, added once returning entities
+  directly from `controller/` turned out to have a real, demonstrated security problem
 
 There is no `playground/` package in this project — the standalone, one-`main()`-per-module
 learning demos live in `java-refresher` instead, alongside the Java-language concepts they

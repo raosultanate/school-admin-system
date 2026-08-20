@@ -67,11 +67,22 @@ scratch.
   my entity need a no-arg constructor," "how do derived query methods work" — answered from
   your own entities, not a tutorial's.
 
-## Module 3 — REST APIs
-- [ ] `@RestController`, `@RequestMapping`/`@GetMapping`/etc.
-- [ ] DTOs vs entities — why you don't return entities directly
-- [ ] `ResponseEntity`, status codes
-- **Build:** CRUD REST endpoints for Students and Teachers, tested with `curl`/Postman.
+## Module 3 — REST APIs ✅
+- [x] `@RestController`, `@RequestMapping`/`@GetMapping`/`@PostMapping`/`@PutMapping`/
+      `@DeleteMapping`, `@PathVariable`, `@RequestBody`
+- [x] DTOs vs entities — why you don't return entities directly. Proven with a real, live
+      attack: built `StudentController` without DTOs first, then overwrote an existing
+      student by including its `id` in a `POST` body. Fixed with `StudentRequest` (no `id`
+      field — structurally impossible to repeat, not just guarded against); re-ran the
+      identical attack against the fix and confirmed it now creates a new row instead.
+- [x] `ResponseEntity`, status codes — `200`/`201`/`404`/`204` all confirmed live; fixed
+      `getOne()` returning `500` on a missing id (should be, and now is, `404`)
+- **Build:** ✅ full CRUD (`GET` all, `GET` one, `POST`, `PUT`, `DELETE`) for **Students,
+  Teachers, and Courses** — went beyond the original Student/Teacher scope since the pattern
+  was already proven. All exercised live with `curl`.
+- **Notes:** [notes/module-03-rest-apis.md](notes/module-03-rest-apis.md)
+- **Interview payoff:** "why use DTOs instead of returning entities" answered with a real
+  security bug you caused and fixed yourself, not the textbook reasons.
 
 ## Module 4 — Validation & Exception Handling in Spring
 *Ties directly back to the custom exceptions already in `domain/exception/`

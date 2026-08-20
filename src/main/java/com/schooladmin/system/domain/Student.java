@@ -1,5 +1,6 @@
 package com.schooladmin.system.domain;
 
+import com.schooladmin.system.dto.StudentRequest;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
@@ -49,6 +50,18 @@ public class Student extends Person {
 
     public int getEnrollmentYear() {
         return enrollmentYear;
+    }
+
+    // Reassigns every field from a StudentRequest onto this ALREADY-PERSISTED entity, for
+    // the PUT/update flow. Kept as one method here rather than a pile of individual setter
+    // calls scattered in the controller -- "how an update applies" is the entity's business,
+    // same reasoning as toEntity() living on StudentRequest for creation.
+    public void updateFrom(StudentRequest request) {
+        setFirstName(request.firstName());
+        setLastName(request.lastName());
+        setEmail(request.email());
+        this.studentNumber = request.studentNumber();
+        this.enrollmentYear = request.enrollmentYear();
     }
 
     @Override

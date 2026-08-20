@@ -1,5 +1,6 @@
 package com.schooladmin.system.domain;
 
+import com.schooladmin.system.dto.CourseRequest;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -48,5 +49,10 @@ public class Course {
 
     public int getCapacity() {
         return capacity;
+    }
+
+    public void updateFrom(CourseRequest request) {
+        this.title = request.title();
+        this.capacity = request.capacity();
     }
 }

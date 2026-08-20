@@ -20,7 +20,7 @@ on top:
 @Component  (the umbrella — "Spring, build and manage this")
    ├── @Service     business logic lives here (PersonService)
    ├── @Repository  data access lives here, + auto exception translation (StudentRepository)
-   └── @Controller  handles HTTP requests here (Module 3)
+   └── @Controller  handles HTTP requests here (StudentController, via @RestController)
 ```
 
 Anything done with `@Service` could technically be done with plain `@Component` instead —
@@ -38,6 +38,29 @@ Spring's own consistent hierarchy).
 | `@PostConstruct` | Not Spring's own annotation (it's `jakarta.annotation`, standard Java), but Spring honors it: calls the annotated method once, automatically, right after the constructor runs and every dependency is already injected — before the bean is handed to anything that depends on it. | `PersonService.logInitialization()` | Module 1 |
 | `@PreDestroy` | The mirror of `@PostConstruct` — calls the annotated method once, right before the container destroys the bean (e.g. on graceful shutdown). Where you'd release a resource (close a connection, stop a thread) if there were one to release. | `PersonService.logShutdown()` | Module 1 |
 | `@Repository` | Not written explicitly anywhere — Spring Data JPA applies it automatically to every interface extending `JpaRepository`. Same `@Component` mechanism as `@Service`, plus translates database-specific exceptions into Spring's own consistent hierarchy. | `StudentRepository`/`TeacherRepository`/`CourseRepository` (applied automatically) | Module 2 |
+| `@RestController` | A `@Controller` (itself a `@Component`) that also assumes every method's return value should be written directly into the HTTP response body as JSON — no separate step needed to say "send this back." | `StudentController`/`TeacherController`/`CourseController` classes | Module 3 |
+
+## Web / REST annotations — routing an HTTP request to a method
+
+These control *which* method handles a given HTTP request, once `@RestController` has
+already gotten the class built as a bean. A different job again from either table above —
+not "is this a bean," but "which bean method does this specific request go to."
+
+| Annotation | What it does | Where it's used | First appeared |
+|---|---|---|---|
+| `@RequestMapping("/api/students")` | A base path every endpoint in the class is relative to — `@GetMapping` inside this class means `GET /api/students`, not just `GET /`. | `StudentController` class | Module 3 |
+| `@GetMapping`/`@PostMapping`/`@PutMapping`/`@DeleteMapping` | Maps one method to one HTTP verb (+ optional path suffix, e.g. `@GetMapping("/{id}")`). Same idea as `@RequestMapping`, specialized per verb — `@GetMapping` is shorthand for `@RequestMapping(method = GET)`. | All four `Student`/`Teacher`/`Course` controller methods | Module 3 |
+| `@PathVariable` | Pulls a `{...}` segment out of the URL and passes it as the annotated method parameter — `@GetMapping("/{id}")` + `@PathVariable Long id` means whatever's in that URL slot becomes `id`. | `getOne(@PathVariable Long id)` | Module 3 |
+| `@RequestBody` | Deserializes the incoming HTTP request body (JSON) into the annotated parameter's type, via Jackson. What made the DTO/entity-binding vulnerability (and its fix) possible to demonstrate at all. | `create(@RequestBody StudentRequest request)` | Module 3 |
+
+**Not an annotation, but essential to this module:** `ResponseEntity<T>` is a regular Java
+class that wraps a response body together with an explicit HTTP status code and headers —
+`ResponseEntity.ok(body)` (200), `ResponseEntity.status(HttpStatus.CREATED).body(body)`
+(201), `ResponseEntity.notFound().build()` (404, no body), `ResponseEntity.noContent().build()`
+(204). Without it, every endpoint just gets Spring's default (200 for anything returned
+normally), which is wrong for a missing resource (should be 404) or a fresh creation
+(should be 201) — confirmed live in `StudentController.getOne()`, which returned 500 before
+this was introduced and 404 after.
 
 ## JPA / Hibernate annotations — a different system entirely
 
@@ -61,4 +84,5 @@ these classes are `@Component`s just because they're entities.
 
 Every time a new annotation gets used for the first time, it gets a row here — what it
 does, in plain terms, and where to see it actually being used in this codebase, in whichever
-table it belongs to (Spring DI vs. JPA/Hibernate).
+table it belongs to (Spring DI, Web/REST, or JPA/Hibernate — three separate systems, same
+`@` syntax).

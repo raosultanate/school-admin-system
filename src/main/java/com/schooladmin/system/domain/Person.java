@@ -69,6 +69,21 @@ public abstract class Person {
         return firstName + " " + lastName;
     }
 
+    // Setters exist specifically for the PUT/update flow (Module 3) -- an existing,
+    // already-persisted entity gets its fields reassigned, then saved again. Not needed
+    // (or used) anywhere else; construction still always goes through the constructor above.
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
     /**
      * A short, role-specific description of this person (e.g. student number for a
      * {@link Student}, department for a {@link Teacher}).

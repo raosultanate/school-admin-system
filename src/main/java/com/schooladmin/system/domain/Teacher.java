@@ -1,5 +1,6 @@
 package com.schooladmin.system.domain;
 
+import com.schooladmin.system.dto.TeacherRequest;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -40,6 +41,13 @@ public class Teacher extends Person {
 
     public Department getDepartment() {
         return department;
+    }
+
+    public void updateFrom(TeacherRequest request) {
+        setFirstName(request.firstName());
+        setLastName(request.lastName());
+        setEmail(request.email());
+        this.department = request.department();
     }
 
     @Override
