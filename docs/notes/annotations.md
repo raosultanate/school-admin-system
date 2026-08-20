@@ -19,7 +19,7 @@ on top:
 ```
 @Component  (the umbrella — "Spring, build and manage this")
    ├── @Service     business logic lives here (PersonService)
-   ├── @Repository  data access lives here, + auto exception translation (Module 2)
+   ├── @Repository  data access lives here, + auto exception translation (StudentRepository)
    └── @Controller  handles HTTP requests here (Module 3)
 ```
 
@@ -37,10 +37,28 @@ Spring's own consistent hierarchy).
 | `@Service` | A `@Component` specialization signaling "business logic lives here." Functionally identical to plain `@Component` for scanning purposes — the difference is purely about communicating intent to whoever reads the code. | `PersonService` class | Module 1 |
 | `@PostConstruct` | Not Spring's own annotation (it's `jakarta.annotation`, standard Java), but Spring honors it: calls the annotated method once, automatically, right after the constructor runs and every dependency is already injected — before the bean is handed to anything that depends on it. | `PersonService.logInitialization()` | Module 1 |
 | `@PreDestroy` | The mirror of `@PostConstruct` — calls the annotated method once, right before the container destroys the bean (e.g. on graceful shutdown). Where you'd release a resource (close a connection, stop a thread) if there were one to release. | `PersonService.logShutdown()` | Module 1 |
+| `@Repository` | Not written explicitly anywhere — Spring Data JPA applies it automatically to every interface extending `JpaRepository`. Same `@Component` mechanism as `@Service`, plus translates database-specific exceptions into Spring's own consistent hierarchy. | `StudentRepository`/`TeacherRepository`/`CourseRepository` (applied automatically) | Module 2 |
+
+## JPA / Hibernate annotations — a different system entirely
+
+Everything in the table above is read by **Spring's** container (component scanning, bean
+wiring). The table below is read by **Hibernate**, a completely separate framework, for a
+completely different job: mapping Java objects to database tables and columns. Same `@`
+syntax, two unrelated annotation systems — nothing here creates a Spring bean, and none of
+these classes are `@Component`s just because they're entities.
+
+| Annotation | What it does | Where it's used | First appeared |
+|---|---|---|---|
+| `@MappedSuperclass` | This class is never its own database table — but its fields become real columns on whatever `@Entity` extends it. The JPA analog of "only ever subclassed, never instantiated directly," which was already true of this class in plain OOP terms. | `Person` class | Module 2 |
+| `@Entity` | This class gets a real database table, created automatically from its fields (and any inherited from a `@MappedSuperclass`). | `Student`, `Teacher`, `Course` classes | Module 2 |
+| `@Id` | Marks the primary key field/column — every entity needs exactly one. | `Person.id` | Module 2 |
+| `@GeneratedValue(strategy = GenerationType.IDENTITY)` | The database auto-generates this field's value on insert (an auto-increment column) — the application never sets it. `IDENTITY` specifically means "let the database's own auto-increment feature handle it," the simplest strategy and the one most databases support identically. | `Person.id` | Module 2 |
+| `@Column(nullable = false, unique = true)` | Explicit column constraints, enforced by the database itself — here, `studentNumber` must be present and unique on every row. `@Column` is optional on most fields (Hibernate infers a sensible default column); used explicitly when a real constraint needs stating. | `Student.studentNumber` | Module 2 |
+| `@Table(name = "...")` | Names the table explicitly. Without it, Hibernate's default naming strategy derives a name from the class name (typically the singular, lowercased class name) — being explicit avoids depending on that default. | `Student`, `Teacher`, `Course` classes | Module 2 |
+| `@Enumerated(EnumType.STRING)` | Controls how an enum field is stored. Without it, Hibernate defaults to `EnumType.ORDINAL` — storing the constant's *declaration position* (0, 1, 2...) as a plain integer, which silently breaks if the enum's order ever changes. `STRING` stores the constant's actual name instead — self-describing, safe against reordering. | `Teacher.department` | Module 2 |
 
 ## Rule going forward
 
 Every time a new annotation gets used for the first time, it gets a row here — what it
-does, in plain terms, and where to see it actually being used in this codebase. `@Repository`
-(a `@Component` specialization that also translates database exceptions — real behavior, not
-just a label) is next, once Module 2 adds a real one.
+does, in plain terms, and where to see it actually being used in this codebase, in whichever
+table it belongs to (Spring DI vs. JPA/Hibernate).

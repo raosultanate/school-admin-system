@@ -48,13 +48,24 @@ scratch.
 - **Interview payoff:** "what is dependency injection / IoC, and why constructor injection
   over field injection" answered from your own wiring, not the textbook version.
 
-## Module 2 — Persistence: JPA, Hibernate, Spring Data
-- [ ] `@Entity`, `@Id`, `@GeneratedValue`, column mapping
-- [ ] Spring Data JPA repositories (`JpaRepository`), derived query methods
-- [ ] H2 in-memory DB + H2 console for poking at data
-- **Build:** `Student`/`Teacher`/`Course` become JPA entities; `StudentRepository`,
-  `TeacherRepository`, `CourseRepository`.
-- **Diagram:** first ER diagram in `docs/architecture.md`.
+## Module 2 — Persistence: JPA, Hibernate, Spring Data ✅
+- [x] `@Entity`, `@Id`, `@GeneratedValue`, column mapping — `Person` (`@MappedSuperclass`),
+      `Student`/`Teacher`/`Course` (`@Entity`), `@Enumerated` for `Teacher.department`
+- [x] Spring Data JPA repositories (`JpaRepository`), derived query methods —
+      `StudentRepository.findByStudentNumber(...)`, confirmed live (generated SQL, real
+      `WHERE` clause, no query written by hand)
+- [x] H2 in-memory DB + H2 console for poking at data — confirmed the database is
+      genuinely temporary (random name every run, destroyed on stop); console reachable at
+      `/h2-console`
+- **Build:** ✅ `Student`/`Teacher`/`Course` are real JPA entities; `StudentRepository`,
+  `TeacherRepository`, `CourseRepository` all exist. `StudentRepositoryStartupRunner.java`
+  proves `save()`/`findById()`/derived queries end-to-end (watched `id` go `null` → `1` on
+  save).
+- **Diagram:** ✅ first ER diagram in `docs/architecture.md`.
+- **Notes:** [notes/module-02-jpa-persistence.md](notes/module-02-jpa-persistence.md)
+- **Interview payoff:** "what does `@Entity`/`@Id`/`@GeneratedValue` actually do," "why does
+  my entity need a no-arg constructor," "how do derived query methods work" — answered from
+  your own entities, not a tutorial's.
 
 ## Module 3 — REST APIs
 - [ ] `@RestController`, `@RequestMapping`/`@GetMapping`/etc.

@@ -93,6 +93,42 @@ _Enrollment is the join entity between Student and Course, introduced in Module 
 [`java-refresher`](../java-refresher), not just a target — see that project's
 `docs/notes/module-01-inheritance-polymorphism.md` and `docs/notes/module-02-enums.md`._
 
+## Database schema (ER diagram, Module 2)
+
+Generated automatically by Hibernate from `@Entity` classes at startup (`ddl-auto`,
+Spring Boot's default for an in-memory database) — confirmed live via `spring.jpa.show-sql`,
+not hand-drawn from a plan:
+
+```mermaid
+erDiagram
+    STUDENTS {
+        bigint id PK
+        varchar email
+        varchar first_name
+        varchar last_name
+        varchar student_number UK
+        int enrollment_year
+    }
+    TEACHERS {
+        bigint id PK
+        varchar email
+        varchar first_name
+        varchar last_name
+        varchar department
+    }
+    COURSES {
+        bigint id PK
+        varchar title
+        int capacity
+    }
+```
+
+No relationships between these tables yet, on purpose — `Course` doesn't reference `Teacher`
+or `Student` at the database level at all right now (matches the domain model diagram above,
+which already plans `Enrollment` as the join entity connecting them; that's Module 6). `id`
+on `Students`/`Teachers` comes from `Person`'s `@MappedSuperclass` fields, flattened into
+each table directly — there's no `persons` table anywhere.
+
 ## Status log
 
 - **Module 0:** project skeleton only, no Spring code yet. `Person`/`Student`/`Teacher`/
@@ -104,5 +140,10 @@ _Enrollment is the join entity between Student and Course, introduced in Module 
 - **Module 1:** the `service/` layer is real, not just target shape — `PersonService`
   (`@Service`, constructor-injected with a `List<Person>` bean) plus
   `PersonServiceStartupRunner` (`CommandLineRunner`), both confirmed live via
-  `./mvnw spring-boot:run`. `controller/` and `repository/` are still target shape — those
-  start Modules 3 and 2 respectively.
+  `./mvnw spring-boot:run`. `controller/` and `repository/` were still target shape at this
+  point — `repository/` became real in Module 2, `controller/` starts Module 3.
+- **Module 2:** the `repository/` layer is real — `StudentRepository`, `TeacherRepository`,
+  `CourseRepository`, all confirmed live (save/findById/derived query methods, real SQL in
+  the logs). `Person` is `@MappedSuperclass`; `Student`/`Teacher`/`Course` are `@Entity`.
+  `Course` is a genuinely new class, didn't exist before this module. `controller/` is still
+  target shape — starts Module 3.
