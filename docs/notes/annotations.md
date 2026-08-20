@@ -9,6 +9,26 @@ a label on your code — it isn't a bean. The *object Spring creates* because it
 label is the bean. `@Service` itself is never a bean; the one `PersonService` object Spring
 builds because of `@Service` is.
 
+## `@Component` is the umbrella
+
+`@Component`/`@Service`/`@Repository`/`@Controller` aren't four separate mechanisms —
+`@Service`, `@Repository`, and `@Controller` are all `@Component` underneath, each just
+carrying a more specific meaning (and, for `@Repository`, one real bit of extra behavior)
+on top:
+
+```
+@Component  (the umbrella — "Spring, build and manage this")
+   ├── @Service     business logic lives here (PersonService)
+   ├── @Repository  data access lives here, + auto exception translation (Module 2)
+   └── @Controller  handles HTTP requests here (Module 3)
+```
+
+Anything done with `@Service` could technically be done with plain `@Component` instead —
+Spring would still find and build it the same way via component scanning. The specific ones
+exist purely so the code's intent is obvious at a glance; `@Repository` is the one exception
+where the label also changes real behavior (translating database-specific exceptions into
+Spring's own consistent hierarchy).
+
 | Annotation | What it does | Where it's used | First appeared |
 |---|---|---|---|
 | `@SpringBootApplication` | A bundle of three annotations at once: `@Configuration` (allows `@Bean` methods on this class), `@ComponentScan` (makes Spring go looking for `@Component`/`@Service`/etc. classes at all), `@EnableAutoConfiguration` (auto-starts Tomcat, H2, etc. based on what's on the classpath). Without this, none of the annotations below would do anything — nothing would be scanning for them. | `SchoolAdminSystemApplication` class | Module 0 (project skeleton) |
